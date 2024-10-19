@@ -1,0 +1,25 @@
+<h2 mat-dialog-title class="text-center text-2xl font-semibold">Add New Team</h2>
+<form [formGroup]="teamForm" (ngSubmit)="onSubmit()">
+  <mat-dialog-content class="space-y-6">
+    <mat-form-field class="w-full" appearance="fill">
+      <mat-label>Team Name</mat-label>
+      <input matInput formControlName="name" required placeholder="Enter team name" />
+      <mat-error *ngIf="teamForm.get('name')?.hasError('required')">Name is required.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="fill">
+      <mat-label>Primary Color</mat-label>
+      <input matInput type="color" formControlName="primaryColor" />
+    </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="fill">
+      <mat-label>Secondary Color</mat-label>
+      <input matInput type="color" formControlName="secondaryColor" />
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="space-x-4">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="teamForm.invalid">Add Team</button>
+  </mat-dialog-actions>
+</form>

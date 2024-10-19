@@ -1,0 +1,26 @@
+/* Add a subtle shadow and rounded corners to the dialog */
+.mat-dialog-container {
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Style the form fields */
+.mat-form-field {
+  margin-bottom: 1.5rem; /* Space between fields */
+}
+
+.mat-form-field .mat-label {
+  font-size: 1rem; /* Label font size */
+}
+
+/* Style the action buttons */
+.mat-dialog-actions {
+  margin-top: 1rem; /* Space above buttons */
+}
+
+/* Responsive styles */
+@media (max-width: 640px) {
+  .mat-dialog-container {
+    width: 90%; /* Responsive width on small screens */
+  }
+}

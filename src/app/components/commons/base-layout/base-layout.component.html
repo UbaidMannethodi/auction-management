@@ -1,0 +1,31 @@
+<!-- base-layout.component.html -->
+<div class="flex h-screen">
+  <!-- Mobile Sidebar Toggle Button -->
+  <button class="md:hidden p-2 bg-blue-500 text-white absolute top-4 left-4 z-10" (click)="toggleSidebar()">
+    ☰
+  </button>
+
+  <!-- Sidebar (Hidden on mobile, shown as a popover) -->
+  <nav [ngClass]="{'translate-x-0': sidebarOpen, '-translate-x-full': !sidebarOpen}" class="fixed inset-y-0 left-0 w-64 bg-gray-800 text-white p-4 transform transition-transform md:relative md:translate-x-0 md:flex md:flex-col">
+    <button class="md:hidden text-white absolute top-2 right-2" (click)="toggleSidebar()">✕</button>
+    <ul class="space-y-4">
+      <li><a class="block py-2 px-4 rounded-md hover:bg-gray-700" routerLink="/players" routerLinkActive="bg-gray-700">Players</a></li>
+      <li><a class="block py-2 px-4 rounded-md hover:bg-gray-700" routerLink="/teams" routerLinkActive="bg-gray-700">Teams</a></li>
+      <li><a class="block py-2 px-4 rounded-md hover:bg-gray-700" routerLink="/managers" routerLinkActive="bg-gray-700">Managers</a></li>
+
+    </ul>
+  </nav>
+
+  <!-- Main Content Area -->
+  <div class="flex-1 flex flex-col">
+    <!-- Header -->
+    <header class="bg-blue-500 text-white p-4">
+      <h1 class="text-xl font-bold">Auction Management</h1>
+    </header>
+
+    <!-- Router Outlet for components -->
+    <section class="flex-1 p-4 overflow-auto bg-gray-100">
+      <router-outlet></router-outlet>
+    </section>
+  </div>
+</div>

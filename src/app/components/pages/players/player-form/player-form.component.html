@@ -1,0 +1,52 @@
+<h2 mat-dialog-title class="text-center text-2xl font-semibold">Add New Player</h2>
+<form [formGroup]="playerForm" (ngSubmit)="onSubmit()">
+  <mat-dialog-content class="space-y-6">
+    <!-- Player Name -->
+    <mat-form-field class="w-full" appearance="fill">
+      <mat-label><mat-icon>person</mat-icon> Name</mat-label>
+      <input matInput formControlName="name" required placeholder="Enter player name" />
+      <mat-error *ngIf="playerForm.get('name')?.hasError('required')">Name is required.</mat-error>
+    </mat-form-field>
+
+    <!-- Position -->
+    <mat-form-field class="w-full" appearance="fill">
+      <mat-label><mat-icon>work</mat-icon> Position</mat-label>
+      <input matInput formControlName="position" required placeholder="Enter position" />
+      <mat-error *ngIf="playerForm.get('position')?.hasError('required')">Position is required.</mat-error>
+    </mat-form-field>
+
+    <!-- Price -->
+    <mat-form-field class="w-full" appearance="fill">
+      <mat-label><mat-icon>attach_money</mat-icon> Price</mat-label>
+      <input matInput formControlName="price" required type="number" placeholder="Enter price" />
+      <mat-error *ngIf="playerForm.get('price')?.hasError('required')">Price is required.</mat-error>
+    </mat-form-field>
+
+    <!-- Team -->
+    <mat-form-field class="w-full" appearance="fill">
+      <mat-label><mat-icon>group</mat-icon> Team</mat-label>
+      <input matInput formControlName="team" required placeholder="Enter team name" />
+      <mat-error *ngIf="playerForm.get('team')?.hasError('required')">Team is required.</mat-error>
+    </mat-form-field>
+
+    <!-- Image Upload -->
+    <div class="w-full">
+      <mat-label><mat-icon>image</mat-icon> Upload Image</mat-label>
+      <div class="flex flex-col items-center mt-2">
+        <input type="file" (change)="onImageSelected($event)" accept="image/*" class="hidden" id="image-upload" />
+        <label for="image-upload" class="cursor-pointer w-full flex flex-col items-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 transition duration-200">
+          <span class="text-gray-500">click to upload</span>
+        </label>
+        <mat-error *ngIf="playerForm.get('image')?.hasError('required')" class="mt-1">Image is required.</mat-error>
+        <div *ngIf="imagePreview" class="mt-2">
+          <img [src]="imagePreview" alt="Image Preview" class="w-32 h-32 rounded-lg border border-gray-300" />
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="space-x-4">
+    <button mat-button color="warn" (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="playerForm.invalid">Add Player</button>
+  </mat-dialog-actions>
+</form>
