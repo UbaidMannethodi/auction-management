@@ -1,12 +1,11 @@
 export const environment = {
   production: true,
   firebase: {
-    apiKey: 'YOUR_API_KEY',
-    authDomain: 'YOUR_PROJECT_ID.firebaseapp.com',
-    databaseURL: 'https://YOUR_PROJECT_ID.firebaseio.com',
-    projectId: 'YOUR_PROJECT_ID',
-    storageBucket: 'YOUR_PROJECT_ID.appspot.com',
-    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-    appId: 'YOUR_APP_ID'
+    apiKey: "AIzaSyB9hLpxOvMpc8Oxa5FJj_RHUfNOuv6S1fs",
+    authDomain: "auction-management-59805.firebaseapp.com",
+    projectId: "auction-management-59805",
+    storageBucket: "auction-management-59805.appspot.com",
+    messagingSenderId: "556634204208",
+    appId: "1:556634204208:web:da6154719d0b076e6c25f5"
   }
 };

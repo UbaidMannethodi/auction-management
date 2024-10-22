@@ -6,6 +6,8 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import {provideFirebaseApp, initializeApp} from "@angular/fire/app";
 import {provideFirestore, getFirestore} from "@angular/fire/firestore";
 import {environment} from "../environments/environment";
+import {provideAnimations} from "@angular/platform-browser/animations";
+import {provideToastr} from "ngx-toastr";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,6 +15,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideAnimationsAsync(),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideFirestore(() => getFirestore())
+    provideFirestore(() => getFirestore()),
+    provideAnimations(),
+    provideToastr(),
   ]
 };

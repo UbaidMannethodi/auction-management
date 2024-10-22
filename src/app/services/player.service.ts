@@ -1,9 +1,19 @@
-// src/app/services/player.service.ts
 
-import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, CollectionReference } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import {Injectable} from '@angular/core';
 import {Player} from "../model/player";
+import {
+  Firestore,
+  collection,
+  addDoc,
+  getDoc,
+  CollectionReference,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  setDoc
+} from '@angular/fire/firestore';
+import { doc } from 'firebase/firestore';
+import {DbConstants} from "../constants/db-constants";
 
 
 @Injectable({
@@ -11,20 +21,63 @@ import {Player} from "../model/player";
 })
 export class PlayerService {
 
-  private playersCollection: CollectionReference;
+  private TABLE_PLAYERS = DbConstants.TABLE_PLAYERS
 
-  constructor(private firestore: Firestore) {
-    this.playersCollection = collection(this.firestore, 'players');
+  playersCollection: CollectionReference;
+
+  constructor(private afs: Firestore) {
+    this.playersCollection = collection(this.afs, this.TABLE_PLAYERS);
   }
 
-  addPlayer(player: Player): Promise<void> {
-    return addDoc(this.playersCollection, player)
-      .then(() => {
-        console.log('Player added successfully');
-      })
-      .catch(error => {
-        console.error('Error adding player: ', error);
-      });
+  async addPlayer(student: Player) {
+    // Get a reference to the 'players' collection
+    const playersCollection = collection(this.afs, 'players');
+
+    // Generate a new document reference to get the ID
+    const newDocRef = doc(playersCollection);
+
+    // Assign the generated document ID to the student object before adding it
+    student.id = newDocRef.id;
+
+    // Add the student to Firestore with the assigned ID
+    await setDoc(newDocRef, student);
+  }
+
+
+  async getPlayers(): Promise<Player[]> {
+    const snapshot = await getDocs(this.playersCollection); // Fetches data once
+    return snapshot.docs.map(doc => doc.data()) as Player[];
+  }
+
+  async editPlayer(playerId: string, updatedPlayer: Partial<Player>) {
+    try {
+      console.log('Editing player with ID:', playerId); // Log player ID
+
+      const playerDocRef = doc(this.afs, 'players', playerId);
+
+      const playerDocSnapshot = await getDoc(playerDocRef);
+
+      if (!playerDocSnapshot.exists()) {
+        console.error(`Player with ID ${playerId} not found.`);
+        throw new Error(`Player with ID ${playerId} does not exist.`);
+      }
+
+      console.log('Updating player document:', updatedPlayer, playerDocRef);
+      await updateDoc(playerDocRef, updatedPlayer);
+
+      console.log('Player updated successfully.');
+    } catch (error) {
+      console.error('Error updating player:', error);
+    }
+  }
+
+
+  async deletePlayer(playerId: string) {
+    // Get a reference to the player document
+    const playerDoc = doc(this.afs, this.TABLE_PLAYERS, playerId);
+
+    // Delete the document
+    await deleteDoc(playerDoc);
   }
 
 }

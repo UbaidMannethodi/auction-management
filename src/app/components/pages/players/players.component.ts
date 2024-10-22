@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {CurrencyPipe, NgForOf} from "@angular/common";
 import {MatDialog} from "@angular/material/dialog";
 import {MatButton} from "@angular/material/button";
 import {PlayerFormComponent} from "./player-form/player-form.component";
+import {PlayerService} from "../../../services/player.service";
+import {Player} from "../../../model/player";
 
 @Component({
   selector: 'app-players',
@@ -15,61 +17,35 @@ import {PlayerFormComponent} from "./player-form/player-form.component";
   templateUrl: './players.component.html',
   styleUrl: './players.component.scss'
 })
-export class PlayersComponent {
+export class PlayersComponent implements OnInit {
 
-  data = [
-    {
-      tokenNo: 'A123',
-      imageUrl: 'https://via.placeholder.com/100',
-      name: 'John Doe',
-      position: 'Forward',
-      price: 50,
-      team: 'Team A',
-    },
-    {
-      tokenNo: 'B456',
-      imageUrl: 'https://via.placeholder.com/100',
-      name: 'Jane Smith',
-      position: 'Midfielder',
-      price: 60,
-      team: 'Team B',
-    },
-    {
-      tokenNo: 'B456',
-      imageUrl: 'https://via.placeholder.com/100',
-      name: 'Jane Smith',
-      position: 'Midfielder',
-      price: 60,
-      team: 'Team B',
-    },
-    {
-      tokenNo: 'B4352356',
-      imageUrl: 'https://via.placeholder.com/100',
-      name: 'Jane Smith',
-      position: 'Midfielder',
-      price: 60,
-      team: 'Team B',
-    },
-    {
-      tokenNo: '5235',
-      imageUrl: 'https://via.placeholder.com/100',
-      name: 'Jane Smith',
-      position: 'Midfielder',
-      price: 60,
-      team: 'Team B',
-    },
-  ];
+  players: Player[] = [];
 
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: MatDialog, private playerService: PlayerService) {}
 
-  openAddPlayerDialog(): void {
+  ngOnInit() {
+    this.getPlayers()
+  }
+
+
+  async getPlayers() {
+    this.players = await this.playerService.getPlayers();
+  }
+
+  editPlayer(player: Player): void {
+    this.openAddPlayerDialog(player);
+  }
+
+  openAddPlayerDialog(player?:Player): void {
+    const editMode = !!player
     const dialogRef = this.dialog.open(PlayerFormComponent, {
       width: '400px',
+      data: {editMode, player}
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.data.push(result);
+      if (result?.type === 'success') {
+        this.getPlayers();
       }
     });
   }

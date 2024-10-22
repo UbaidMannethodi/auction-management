@@ -1,4 +1,9 @@
-<h2 mat-dialog-title class="text-center text-2xl font-semibold">Add New Player</h2>
+<ngx-loading
+  [show]="loading"
+  [config]="{ backdropBorderRadius: '3px' }"
+></ngx-loading>
+
+<h2 mat-dialog-title class="text-center text-2xl font-semibold">{{data?.editMode ? 'Modify Player' : 'Add New Player'}}</h2>
 <form [formGroup]="playerForm" (ngSubmit)="onSubmit()">
   <mat-dialog-content class="space-y-6">
     <!-- Player Name -->
@@ -47,6 +52,6 @@
 
   <mat-dialog-actions align="end" class="space-x-4">
     <button mat-button color="warn" (click)="onCancel()">Cancel</button>
-    <button mat-raised-button color="primary" type="submit" [disabled]="playerForm.invalid">Add Player</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="playerForm.invalid">{{data?.editMode ? 'Modify Player' : 'Add Player'}}</button>
   </mat-dialog-actions>
 </form>

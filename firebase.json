@@ -1,6 +1,7 @@
 {
   "hosting": {
-    "public": "dist",
+    "site": "universal-auction-manager",
+    "public": "dist/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
