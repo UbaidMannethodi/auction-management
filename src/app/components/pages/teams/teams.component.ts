@@ -1,18 +1,17 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MatError, MatFormField, MatLabel} from "@angular/material/form-field";
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {ReactiveFormsModule} from "@angular/forms";
 import {MatInput} from "@angular/material/input";
-import {MatButton} from "@angular/material/button";
+import {MatButton, MatIconButton} from "@angular/material/button";
 import {NgForOf, NgIf, NgStyle} from "@angular/common";
-import {TeamFormComponent} from "./team-form/team-form.component";
 import {MatDialog} from "@angular/material/dialog";
-
-interface Team {
-  name: string;
-  logo: string;
-  primaryColor: string;
-  secondaryColor: string;
-}
+import {ToastrService} from "ngx-toastr";
+import {ConfirmDialogComponent} from "../../commons/confirm-dialog/confirm-dialog.component";
+import {TeamService} from "../../../services/team/team.service";
+import {Team} from "../../../model/team";
+import {TeamFormComponent} from "./team-form/team-form.component";
+import {MatIcon} from "@angular/material/icon";
+import {NgxLoadingModule} from "ngx-loading";
 
 
 @Component({
@@ -27,47 +26,82 @@ interface Team {
     MatError,
     NgIf,
     NgForOf,
-    NgStyle
+    NgStyle,
+    MatIcon,
+    MatIconButton,
+    NgxLoadingModule
   ],
   templateUrl: './teams.component.html',
   styleUrl: './teams.component.scss'
 })
-export class TeamsComponent {
+export class TeamsComponent implements OnInit {
 
-  teams: Team[] = [
-    { name: 'Argentina', logo: 'path/to/argentina-logo.png', primaryColor: '#A500A1', secondaryColor: '#B2B2B2' },
-    { name: 'Brazil', logo: 'path/to/brazil-logo.png', primaryColor: '#3E4095', secondaryColor: '#FFD700' },
-    // Add more teams as needed
-  ];
+  teams: Team[] = [];
+  loading = false;
 
-  teamForm: FormGroup;
+  constructor(private dialog: MatDialog,
+              private teamService: TeamService,
+              private toastr: ToastrService,
+  ) {}
 
-  constructor(private fb: FormBuilder, private dialog: MatDialog) {
-    this.teamForm = this.fb.group({
-      name: ['', Validators.required],
-      logo: ['', Validators.required],
-      primaryColor: ['#000000'],
-      secondaryColor: ['#FFFFFF'],
-    });
+  ngOnInit() {
+    this.getTeams();
   }
 
-  openAddTeamDialog(): void {
-    const dialogRef = this.dialog.open(TeamFormComponent, {
-      width: '400px',
+  async getTeams() {
+    try {
+      this.loading = true;
+      this.teams = await this.teamService.getTeam();
+      console.log('team', this.teams);
+    } catch (error: any) {
+      this.loading = false;
+      this.toastr.error(error, 'Something went wrong.');
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  openConfirmDialog(team: Team): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Confirm Deletion',
+        message: `Are you sure you want to delete <b>${team.name}</b>?`,
+      },
+      panelClass: 'custom-dialog',
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.teams.push(result);
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.deleteTeam(team);
       }
     });
   }
 
-  onSubmit(): void {
-    if (this.teamForm.valid) {
-      this.teams.push(this.teamForm.value);
-      this.teamForm.reset();
+  async deleteTeam(team: Team) {
+    try {
+      this.loading = true;
+      await this.teamService.deleteTeam(team?.id);
+    } catch (error: any) {
+      this.loading = false;
+      this.toastr.error(error, 'Something went wrong.');
+    } finally {
+      this.teams = this.teams.filter(p => p.id !== team.id);
+      this.loading = false;
     }
+  }
+
+  openAddTeamDialog(team?: Team): void {
+    const editMode = !!team
+    const dialogRef = this.dialog.open(TeamFormComponent, {
+      width: '400px',
+      data: {editMode, team, totalTeams: this.teams?.length}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.type === 'success') {
+        this.getTeams();
+      }
+    });
   }
 
 }

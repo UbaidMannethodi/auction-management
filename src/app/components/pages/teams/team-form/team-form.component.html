@@ -1,5 +1,11 @@
-<h2 mat-dialog-title class="text-center text-2xl font-semibold">Add New Team</h2>
-<form [formGroup]="teamForm" (ngSubmit)="onSubmit()">
+<ngx-loading
+  [show]="loading.managers || loading?.players || loading?.posting"
+  [config]="{ backdropBorderRadius: '3px' }"
+></ngx-loading>
+
+
+<h2 mat-dialog-title class="text-center text-2xl font-semibold">{{data.editMode ? 'Modify Team' : 'Add New Team'}}</h2>
+<form [formGroup]="teamForm">
   <mat-dialog-content class="space-y-6">
     <mat-form-field class="w-full" appearance="fill">
       <mat-label>Team Name</mat-label>
@@ -16,10 +22,30 @@
       <mat-label>Secondary Color</mat-label>
       <input matInput type="color" formControlName="secondaryColor" />
     </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="fill" *ngIf="data.editMode">
+      <mat-label><mat-icon>work</mat-icon> Manager</mat-label>
+      <mat-select formControlName="manager" placeholder="Select manager">
+        <mat-option *ngFor="let manager of managers" [value]="manager.id">
+          <img [src]="manager.image" alt="{{manager.name}}" class="inline-block w-6 h-6 mr-2" />
+          {{ manager.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="fill" *ngIf="data.editMode">
+      <mat-label><mat-icon>work</mat-icon> Players</mat-label>
+      <mat-select formControlName="players" multiple placeholder="Select players">
+        <mat-option *ngFor="let player of players" [value]="player.id">
+          <img [src]="player.image" alt="{{player.name}}" class="inline-block w-6 h-6 mr-2" />
+          {{ player.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
   </mat-dialog-content>
 
   <mat-dialog-actions align="end" class="space-x-4">
-    <button mat-button (click)="onCancel()">Cancel</button>
-    <button mat-raised-button color="primary" type="submit" [disabled]="teamForm.invalid">Add Team</button>
+    <button mat-button color="warn" (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="teamForm.invalid">{{data.editMode ? 'Modify Team' : 'Add Team'}}</button>
   </mat-dialog-actions>
 </form>

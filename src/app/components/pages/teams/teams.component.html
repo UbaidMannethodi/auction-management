@@ -1,15 +1,58 @@
+
+<ngx-loading
+  [show]="loading"
+  [config]="{ backdropBorderRadius: '3px' }"
+></ngx-loading>
+
 <div class="p-6">
   <h2 class="text-2xl font-semibold text-center mb-6">Team List</h2>
 
+  <!-- Add Team Button -->
   <div class="flex justify-end mb-4">
     <button mat-raised-button color="primary" (click)="openAddTeamDialog()">Add Team</button>
   </div>
 
+  <!-- Team Cards -->
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
     <div *ngFor="let team of teams"
-         class="rounded-lg p-4 flex flex-col items-center"
+         class="rounded-lg p-6 shadow-xl flex flex-col items-center space-y-6 relative"
          [ngStyle]="{'background-color': team.primaryColor}">
-      <h3 class="text-lg font-bold" [ngStyle]="{'color': team.secondaryColor}">{{ team.name }}</h3>
+
+      <!-- Manager Section (Highlighted) -->
+      <div class="bg-white p-4 rounded-lg shadow-lg flex flex-col items-center space-y-2 border-2 border-blue-500">
+        <img [src]="team.manager?.image || 'assets/images/default-avatar.png'" alt="{{ team.manager?.name || 'Default Avatar' }}"
+             class="w-20 h-20 rounded-full object-cover border-4 border-blue-500">
+        <h3 class="text-xl font-bold" [ngStyle]="{'color': team.secondaryColor}">
+          {{ team.manager?.name || 'No Manager' }}
+        </h3>
+        <p class="text-sm text-gray-500">Manager</p>
+      </div>
+
+      <!-- Players List (with positions) -->
+      <div class="grid grid-cols-3 gap-2 w-full">
+        <div *ngFor="let player of team.players" class="flex flex-col items-center space-y-1">
+          <img [src]="player.image" alt="{{ player.name }}"
+               class="w-14 h-14 rounded-full object-cover border-2 border-gray-300">
+          <span class="text-sm font-semibold">{{ player.name }}</span>
+          <span class="text-xs text-gray-500">{{ player.position }}</span>
+        </div>
+      </div>
+
+      <!-- Player Count Badge -->
+      <div class="absolute top-4 right-4 bg-gray-100 px-3 py-1 rounded-lg text-sm font-semibold">
+        {{ team.players.length }} Players
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex justify-between space-x-4 w-full mt-4">
+        <button mat-icon-button color="accent" (click)="openAddTeamDialog(team)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="openConfirmDialog(team)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
     </div>
   </div>
 </div>
+
