@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
-import {NgClass} from "@angular/common";
+import {NgClass, NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-base-layout',
@@ -9,7 +9,8 @@ import {NgClass} from "@angular/common";
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
-    NgClass
+    NgClass,
+    NgIf
   ],
   templateUrl: './base-layout.component.html',
   styleUrl: './base-layout.component.scss'
