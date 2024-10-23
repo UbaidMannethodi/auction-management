@@ -12,6 +12,8 @@ import {Team} from "../../../model/team";
 import {TeamFormComponent} from "./team-form/team-form.component";
 import {MatIcon} from "@angular/material/icon";
 import {NgxLoadingModule} from "ngx-loading";
+import {Player} from "../../../model/player";
+import {TeamOverviewComponent} from "./team-overview/team-overview.component";
 
 
 @Component({
@@ -95,6 +97,19 @@ export class TeamsComponent implements OnInit {
     const dialogRef = this.dialog.open(TeamFormComponent, {
       width: '400px',
       data: {editMode, team, totalTeams: this.teams?.length}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.type === 'success') {
+        this.getTeams();
+      }
+    });
+  }
+
+  openTeamOverviewDialog(player?:Player): void {
+    const dialogRef = this.dialog.open(TeamOverviewComponent, {
+      width: '400px',
+      data: {player}
     });
 
     dialogRef.afterClosed().subscribe(result => {

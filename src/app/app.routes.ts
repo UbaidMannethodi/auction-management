@@ -3,6 +3,7 @@ import {BaseLayoutComponent} from "./components/commons/base-layout/base-layout.
 import {PlayersComponent} from "./components/pages/players/players.component";
 import {TeamsComponent} from "./components/pages/teams/teams.component";
 import {ManagersComponent} from "./components/pages/managers/managers.component";
+import {TokenListComponent} from "./components/pages/token-list/token-list.component";
 
 export const routes: Routes = [
   {
@@ -13,6 +14,7 @@ export const routes: Routes = [
       { path: 'players', component: PlayersComponent },
       { path: 'teams', component: TeamsComponent },
       { path: 'managers', component: ManagersComponent },
+      { path: 'tokens', component: TokenListComponent },
     ],
   },
   { path: '**', redirectTo: 'players' }

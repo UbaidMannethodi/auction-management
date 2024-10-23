@@ -13,15 +13,12 @@ import {MatInput} from "@angular/material/input";
 import {NgForOf, NgIf} from "@angular/common";
 import {MatIcon} from "@angular/material/icon";
 import {PlayerService} from "../../../../services/players/player.service";
-
-import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
 import {NgxLoadingModule} from "ngx-loading";
 import {ToastrService} from "ngx-toastr";
 import {Player} from "../../../../model/player";
 import {MatOption, MatSelect} from "@angular/material/select";
 import {ImageUtils} from "../../../../utils/image-utils";
 import {DataUtils} from "../../../../utils/data-utils";
-import {data} from "autoprefixer";
 
 @Component({
   selector: 'app-player-form',
@@ -50,6 +47,7 @@ import {data} from "autoprefixer";
 })
 export class PlayerFormComponent implements OnInit {
 
+  maxFileSizeInBytes = 5242880;  // Default 10MB
 
   positions = DataUtils.playerPositions;
 
@@ -157,6 +155,12 @@ export class PlayerFormComponent implements OnInit {
   onImageSelected(event: Event): void {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files.length) {
+
+      if (this.maxFileSizeInBytes < target.files[0].size) {
+        this.toastr.success('', 'Size cannot exceed 5MB');
+        return;
+      }
+
       this.imageFile = target.files[0];
       const reader = new FileReader();
 
