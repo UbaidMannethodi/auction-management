@@ -1,0 +1,16 @@
+<div class="flex items-center justify-center min-h-screen bg-cover bg-center" style="background-image: url('/images/icons/ground_bg.jpg');">
+  <div class="bg-white bg-opacity-80 p-8 rounded shadow-md w-96">
+    <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
+    <form>
+      <div class="mb-4">
+        <label class="block text-sm font-semibold mb-2" for="username">Username</label>
+        <input type="text" id="username" [(ngModel)]="username" name="username" required class="w-full p-2 border border-gray-300 rounded" placeholder="Enter your username" />
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-semibold mb-2" for="password">Password</label>
+        <input type="password" id="password" [(ngModel)]="password" name="password" required class="w-full p-2 border border-gray-300 rounded" placeholder="Enter your password" />
+      </div>
+      <button (click)="onSubmit()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Login</button>
+    </form>
+  </div>
+</div>

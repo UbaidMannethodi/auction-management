@@ -7,5 +7,10 @@ export const environment = {
     storageBucket: "auction-management-59805.appspot.com",
     messagingSenderId: "556634204208",
     appId: "1:556634204208:web:da6154719d0b076e6c25f5"
+  },
+
+  cred: {
+    username: 'universal',
+    password: 'universal@56',
   }
 };
