@@ -1,6 +1,6 @@
 
 import {Injectable} from '@angular/core';
-import {Player} from "../model/player";
+import {Player} from "../../model/player";
 import {
   Firestore,
   collection,
@@ -13,7 +13,7 @@ import {
   setDoc
 } from '@angular/fire/firestore';
 import { doc } from 'firebase/firestore';
-import {DbConstants} from "../constants/db-constants";
+import {DbConstants} from "../../constants/db-constants";
 
 
 @Injectable({
@@ -25,13 +25,14 @@ export class PlayerService {
 
   playersCollection: CollectionReference;
 
-  constructor(private afs: Firestore) {
-    this.playersCollection = collection(this.afs, this.TABLE_PLAYERS);
+  constructor(private firestore: Firestore) {
+    this.playersCollection = collection(this.firestore, this.TABLE_PLAYERS);
   }
+
 
   async addPlayer(student: Player) {
     // Get a reference to the 'players' collection
-    const playersCollection = collection(this.afs, 'players');
+    const playersCollection = collection(this.firestore, this.TABLE_PLAYERS);
 
     // Generate a new document reference to get the ID
     const newDocRef = doc(playersCollection);
@@ -51,9 +52,8 @@ export class PlayerService {
 
   async editPlayer(playerId: string, updatedPlayer: Partial<Player>) {
     try {
-      console.log('Editing player with ID:', playerId); // Log player ID
 
-      const playerDocRef = doc(this.afs, 'players', playerId);
+      const playerDocRef = doc(this.firestore, this.TABLE_PLAYERS, playerId);
 
       const playerDocSnapshot = await getDoc(playerDocRef);
 
@@ -74,8 +74,7 @@ export class PlayerService {
 
   async deletePlayer(playerId: string) {
     // Get a reference to the player document
-    const playerDoc = doc(this.afs, this.TABLE_PLAYERS, playerId);
-
+    const playerDoc = doc(this.firestore, this.TABLE_PLAYERS, playerId);
     // Delete the document
     await deleteDoc(playerDoc);
   }

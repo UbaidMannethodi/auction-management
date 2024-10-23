@@ -3,9 +3,18 @@
   [config]="{ backdropBorderRadius: '3px' }"
 ></ngx-loading>
 
-<h2 mat-dialog-title class="text-center text-2xl font-semibold">{{data?.editMode ? 'Modify Player' : 'Add New Player'}}</h2>
-<form [formGroup]="playerForm" (ngSubmit)="onSubmit()">
+<h2 mat-dialog-title class="text-center text-2xl font-semibold">{{data.editMode ? 'Modify Player' : 'Add New Player'}}</h2>
+<form [formGroup]="playerForm">
+
   <mat-dialog-content class="space-y-6">
+
+    <!-- Token -->
+    <mat-form-field class="w-full" appearance="fill">
+      <mat-label><mat-icon>token</mat-icon> Token No</mat-label>
+      <input matInput formControlName="tokenNo" type="number" placeholder="Enter Token Number" />
+      <mat-error *ngIf="playerForm.get('tokenNo')?.hasError('required')">Token Number is required.</mat-error>
+    </mat-form-field>
+
     <!-- Player Name -->
     <mat-form-field class="w-full" appearance="fill">
       <mat-label><mat-icon>person</mat-icon> Name</mat-label>
@@ -16,22 +25,12 @@
     <!-- Position -->
     <mat-form-field class="w-full" appearance="fill">
       <mat-label><mat-icon>work</mat-icon> Position</mat-label>
-      <input matInput formControlName="position" required placeholder="Enter position" />
+      <mat-select formControlName="position" required placeholder="Select position">
+        <mat-option *ngFor="let position of positions" [value]="position.id">
+          {{ position.name }}
+        </mat-option>
+      </mat-select>
       <mat-error *ngIf="playerForm.get('position')?.hasError('required')">Position is required.</mat-error>
-    </mat-form-field>
-
-    <!-- Price -->
-    <mat-form-field class="w-full" appearance="fill">
-      <mat-label><mat-icon>attach_money</mat-icon> Price</mat-label>
-      <input matInput formControlName="price" required type="number" placeholder="Enter price" />
-      <mat-error *ngIf="playerForm.get('price')?.hasError('required')">Price is required.</mat-error>
-    </mat-form-field>
-
-    <!-- Team -->
-    <mat-form-field class="w-full" appearance="fill">
-      <mat-label><mat-icon>group</mat-icon> Team</mat-label>
-      <input matInput formControlName="team" required placeholder="Enter team name" />
-      <mat-error *ngIf="playerForm.get('team')?.hasError('required')">Team is required.</mat-error>
     </mat-form-field>
 
     <!-- Image Upload -->
@@ -48,10 +47,18 @@
         </div>
       </div>
     </div>
+
+    <!-- Price -->
+    <mat-form-field class="w-full" appearance="fill" *ngIf="data?.editMode">
+      <mat-label><mat-icon>attach_money</mat-icon> Price</mat-label>
+      <input matInput formControlName="price" type="number" placeholder="Enter price" />
+      <mat-error *ngIf="playerForm.get('price')?.hasError('required')">Price is required.</mat-error>
+    </mat-form-field>
+
   </mat-dialog-content>
 
   <mat-dialog-actions align="end" class="space-x-4">
     <button mat-button color="warn" (click)="onCancel()">Cancel</button>
-    <button mat-raised-button color="primary" type="submit" [disabled]="playerForm.invalid">{{data?.editMode ? 'Modify Player' : 'Add Player'}}</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="playerForm.invalid">{{data.editMode ? 'Modify Player' : 'Add Player'}}</button>
   </mat-dialog-actions>
 </form>

@@ -3,8 +3,12 @@ import {CurrencyPipe, NgForOf} from "@angular/common";
 import {MatDialog} from "@angular/material/dialog";
 import {MatButton} from "@angular/material/button";
 import {PlayerFormComponent} from "./player-form/player-form.component";
-import {PlayerService} from "../../../services/player.service";
+import {PlayerService} from "../../../services/players/player.service";
 import {Player} from "../../../model/player";
+import {NgxLoadingModule} from "ngx-loading";
+import {ToastrService} from "ngx-toastr";
+import {ConfirmDialogComponent} from "../../commons/confirm-dialog/confirm-dialog.component";
+import {DataUtils} from "../../../utils/data-utils";
 
 @Component({
   selector: 'app-players',
@@ -12,7 +16,8 @@ import {Player} from "../../../model/player";
   imports: [
     CurrencyPipe,
     NgForOf,
-    MatButton
+    MatButton,
+    NgxLoadingModule
   ],
   templateUrl: './players.component.html',
   styleUrl: './players.component.scss'
@@ -20,27 +25,72 @@ import {Player} from "../../../model/player";
 export class PlayersComponent implements OnInit {
 
   players: Player[] = [];
+  loading = false;
 
-  constructor(private dialog: MatDialog, private playerService: PlayerService) {}
+  constructor(private dialog: MatDialog,
+              private playerService: PlayerService,
+              private toastr: ToastrService,
+  ) {}
 
   ngOnInit() {
-    this.getPlayers()
+    this.getPlayers();
   }
 
-
   async getPlayers() {
-    this.players = await this.playerService.getPlayers();
+    try {
+      this.loading = true;
+      this.players = await this.playerService.getPlayers();
+    } catch (error: any) {
+      this.loading = false;
+      this.toastr.error(error, 'Something went wrong.');
+    } finally {
+      this.loading = false;
+    }
   }
 
   editPlayer(player: Player): void {
     this.openAddPlayerDialog(player);
   }
 
+  openConfirmDialog(player: Player): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Confirm Deletion',
+        message: `Are you sure you want to delete <b>${player.name}</b>?`,
+      },
+      panelClass: 'custom-dialog',
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.deletePlayer(player);
+      }
+    });
+  }
+
+  async deletePlayer(player: Player) {
+    try {
+      this.loading = true;
+      await this.playerService.deletePlayer(player?.id);
+    } catch (error: any) {
+      this.loading = false;
+      this.toastr.error(error, 'Something went wrong.');
+    } finally {
+      this.players = this.players.filter(p => p.id !== player.id);
+      this.loading = false;
+    }
+  }
+
+  getPosition(positionID: string): string {
+    const positions = DataUtils.playerPositions;
+    return positions.find( position => position.id === positionID)?.name
+  }
+
   openAddPlayerDialog(player?:Player): void {
     const editMode = !!player
     const dialogRef = this.dialog.open(PlayerFormComponent, {
       width: '400px',
-      data: {editMode, player}
+      data: {editMode, player, totalPlayers: this.players?.length}
     });
 
     dialogRef.afterClosed().subscribe(result => {

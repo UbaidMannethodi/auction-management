@@ -10,14 +10,18 @@ import {MatButton} from "@angular/material/button";
 import {MatError, MatFormField, MatLabel} from "@angular/material/form-field";
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatInput} from "@angular/material/input";
-import {NgIf} from "@angular/common";
+import {NgForOf, NgIf} from "@angular/common";
 import {MatIcon} from "@angular/material/icon";
-import {PlayerService} from "../../../../services/player.service";
+import {PlayerService} from "../../../../services/players/player.service";
 
 import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
 import {NgxLoadingModule} from "ngx-loading";
 import {ToastrService} from "ngx-toastr";
 import {Player} from "../../../../model/player";
+import {MatOption, MatSelect} from "@angular/material/select";
+import {ImageUtils} from "../../../../utils/image-utils";
+import {DataUtils} from "../../../../utils/data-utils";
+import {data} from "autoprefixer";
 
 @Component({
   selector: 'app-player-form',
@@ -35,6 +39,9 @@ import {Player} from "../../../../model/player";
     MatDialogTitle,
     MatIcon,
     NgxLoadingModule,
+    MatSelect,
+    MatOption,
+    NgForOf,
   ],
 
   providers: [],
@@ -43,20 +50,24 @@ import {Player} from "../../../../model/player";
 })
 export class PlayerFormComponent implements OnInit {
 
+
+  positions = DataUtils.playerPositions;
+
   playerForm:FormGroup;
   playerData: Player;
 
-  loading = false
+  loading = false;
 
   imagePreview: string | ArrayBuffer | null = null;
   imageFile: File | null = null;
+
 
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<PlayerFormComponent>,
     private playerService: PlayerService,
     private toastr: ToastrService,
-    @Inject(MAT_DIALOG_DATA) public data: { editMode?: boolean, player?: Player }
+    @Inject(MAT_DIALOG_DATA) public data: { totalPlayers: number, editMode: boolean, player: Player }
   ) {}
 
 
@@ -71,10 +82,11 @@ export class PlayerFormComponent implements OnInit {
     console.log('editingData', editingData);
     this.playerForm = this.fb.group({
       id: [editingData?.id],
+      tokenNo: [editingData?.tokenNo ?? (this.data.totalPlayers + 1), Validators.required],
       name: [editingData?.name, Validators.required],
       position: [editingData?.position, Validators.required],
-      price: [editingData?.price, Validators.required],
-      team: [editingData?.team, Validators.required],
+      price: [editingData?.price],
+      // team: [editingData?.team, Validators.required],
       image: [editingData?.image, Validators.required],
     });
 
@@ -96,7 +108,7 @@ export class PlayerFormComponent implements OnInit {
     if (this.playerForm.valid && this.imageFile) {
       try {
         this.loading = true;
-        const imageUrl = await this.getImageUrl(this.imageFile);
+        const imageUrl = await ImageUtils.getImageUrl(this.imageFile);
         const playerData = {
           ...this.playerForm.value,
           image: imageUrl
@@ -120,7 +132,7 @@ export class PlayerFormComponent implements OnInit {
         this.loading = true;
         let imageUrl;
         if (this.imageFile) {
-          imageUrl = await this.getImageUrl(this.imageFile);
+          imageUrl = await ImageUtils.getImageUrl(this.imageFile);
         } else {
           imageUrl = this.data?.player?.image
         }
@@ -128,9 +140,10 @@ export class PlayerFormComponent implements OnInit {
           ...this.playerForm.value,
           image: imageUrl
         };
-        await this.playerService.editPlayer(this.playerData?.id, playerData).then( () => {
+        await this.playerService.editPlayer(this.playerData?.id, playerData).then( (players) => {
+          console.log('players updated', players);
           this.toastr.success('', 'Player modified successfully.');
-          this.dialogRef.close({type: 'success'});
+          this.dialogRef.close({type: 'success', players});
           this.loading = false;
         });
       } catch (error: any) {
@@ -138,28 +151,6 @@ export class PlayerFormComponent implements OnInit {
         this.toastr.error(error, 'Something went wrong.');
       }
     }
-  }
-
-  getImageUrl(imageFile: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const storage = getStorage();
-      const storageRef = ref(storage, `images/${imageFile.name}`);
-      const reader = new FileReader();
-
-      reader.onload = async () => {
-        try {
-          const dataUrl = reader.result as string; // Get the data URL
-          await uploadString(storageRef, dataUrl, 'data_url'); // Upload the image
-          const downloadURL = await getDownloadURL(storageRef); // Get the download URL
-          resolve(downloadURL);
-        } catch (error) {
-          reject(error);
-        }
-      };
-
-      reader.onerror = (error) => reject(error); // Handle FileReader error
-      reader.readAsDataURL(imageFile); // Read the file as a data URL
-    });
   }
 
 
@@ -176,6 +167,8 @@ export class PlayerFormComponent implements OnInit {
       reader.readAsDataURL(this.imageFile); // Read file as data URL
       this.playerForm.patchValue({ image: this.imageFile });
     }
+
+    console.log('ss', this.playerForm)
   }
 
   onCancel(): void {

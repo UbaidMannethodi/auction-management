@@ -3,7 +3,6 @@ export interface Player {
   name: string;
   tokenNo: number;
   position?: string;
-  team?: string;
   price?: number;
   image: string;
 }
