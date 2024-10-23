@@ -9,10 +9,11 @@ export const routes: Routes = [
     path: '',
     component: BaseLayoutComponent,
     children: [
+      {path: '', redirectTo: 'players', pathMatch: 'full'},
       { path: 'players', component: PlayersComponent },
       { path: 'teams', component: TeamsComponent },
       { path: 'managers', component: ManagersComponent },
     ],
   },
-  { path: '**', redirectTo: 'student' }
+  { path: '**', redirectTo: 'players' }
 ];
