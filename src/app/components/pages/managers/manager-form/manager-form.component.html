@@ -1,5 +1,11 @@
-<h2 mat-dialog-title class="text-center text-2xl font-semibold">Add New Manager</h2>
-<form [formGroup]="managerForm" (ngSubmit)="onSubmit()">
+<ngx-loading
+  [show]="loading"
+  [config]="{ backdropBorderRadius: '3px' }"
+></ngx-loading>
+
+
+<h2 mat-dialog-title class="text-center text-2xl font-semibold">{{data.editMode ? 'Modify Manager' : 'Add New Manager'}}</h2>
+<form [formGroup]="managerForm">
   <mat-dialog-content class="space-y-6">
     <!-- Player Name -->
     <mat-form-field class="w-full" appearance="fill">
@@ -26,6 +32,6 @@
 
   <mat-dialog-actions align="end" class="space-x-4">
     <button mat-button color="warn" (click)="onCancel()">Cancel</button>
-    <button mat-raised-button color="primary" type="submit" [disabled]="managerForm.invalid">Add Player</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="managerForm.invalid">{{data.editMode ? 'Modify Manager' : 'Add Manager'}}</button>
   </mat-dialog-actions>
 </form>
