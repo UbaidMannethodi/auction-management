@@ -5,6 +5,10 @@ import {PlayerService} from "../../../services/players/player.service";
 import {ToastrService} from "ngx-toastr";
 import {PlayerOverviewComponent} from "../players/player-overview/player-overview.component";
 import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
+import {NgxLoadingModule} from "ngx-loading";
+import {TeamService} from "../../../services/team/team.service";
+import {Team} from "../../../model/team";
+import {environment} from "../../../../environments/environment";
 
 @Component({
   selector: 'app-token-list',
@@ -13,69 +17,71 @@ import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
     NgForOf,
     NgClass,
     NgIf,
-    NgStyle
+    NgStyle,
+    NgxLoadingModule
   ],
   templateUrl: './token-list.component.html',
   styleUrl: './token-list.component.scss'
 })
 export class TokenListComponent implements OnInit {
 
-  loading = false;
+  loading = {
+    player: false,
+    team: false,
+  };
   players: Player[];
-
-
-  tokens = Array.from({ length: 40 }, (_, i) => i + 1);
-  selectedTokens: number[] = [];
-
-  // Sample teams array
-  teams = [
-    { team: 'Team 1', total: 700, balance: 250, bg: 'red', primaryColor: 'black' },
-    { team: 'Team 2', total: 600, balance: 200, bg: '#f5f5f5', primaryColor: '#333' },
-    { team: 'Team 3', total: 500, balance: 300, bg: 'white', primaryColor: 'black' },
-    { team: 'Team 4', total: 800, balance: 150, bg: '#fff', primaryColor: '#111' },
-    { team: 'Team 5', total: 450, balance: 350, bg: '#f0f0f0', primaryColor: '#222' },
-    { team: 'Team 6', total: 650, balance: 280, bg: '#f5f5f5', primaryColor: '#000' },
-    { team: 'Team 7', total: 720, balance: 210, bg: 'white', primaryColor: '#333' },
-    { team: 'Team 8', total: 780, balance: 180, bg: '#fafafa', primaryColor: '#555' }
-  ];
+  teams: Team[];
+  environment = environment
 
   constructor(private dialog: MatDialog,
               private playerService: PlayerService,
+              public teamService: TeamService,
               private toastr: ToastrService) {}
 
   ngOnInit(): void {
-    // this.getPlayers();
+    this.getPlayers();
+    this.getTeam();
   }
 
-  toggleTokenSelection(token: number) {
-    if (this.selectedTokens.includes(token)) {
-      this.selectedTokens = this.selectedTokens.filter(t => t !== token);
-    } else {
-      this.selectedTokens.push(token);
-    }
-  }
+
 
   async getPlayers() {
     try {
-      this.loading = true;
+      this.loading.player = true;
       this.players = await this.playerService.getPlayers();
     } catch (error: any) {
-      this.loading = false;
+      this.loading.player = false;
       this.toastr.error(error, 'Something went wrong.');
     } finally {
-      this.loading = false;
+      this.loading.player = false;
+    }
+  }
+
+  async getTeam() {
+    try {
+      this.loading.team = true;
+      this.teams = await this.teamService.getTeam();
+    } catch (error: any) {
+      this.loading.team = false;
+      this.toastr.error(error, 'Something went wrong.');
+    } finally {
+      this.loading.team = false;
     }
   }
 
   openPlayerOverviewDialog(player?:Player): void {
     const dialogRef = this.dialog.open(PlayerOverviewComponent, {
-      width: '400px',
-      data: {player}
+      width: '95vw',  // Full viewport width
+      height: '95vh', // Full viewport height
+      maxWidth: '95vw',
+      maxHeight: '95vh',
+      data: {player, teams: this.teams}
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result?.type === 'success') {
+      if (result?.success) {
         this.getPlayers();
+        this.getTeam();
       }
     });
   }

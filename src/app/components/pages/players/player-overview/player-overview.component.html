@@ -1,1 +1,42 @@
-<p>player-overview works!</p>
+
+<ngx-loading
+  [show]="isImageLoading || loading"
+  [config]="{ backdropBorderRadius: '3px' }"
+></ngx-loading>
+
+
+
+<div class="flex flex-col items-center justify-center bg-[url('/images/icons/ground_bg.jpg')] p-6 rounded-lg w-full h-full">
+  <!-- Player Image - Larger in a rectangle box with border and shadow -->
+  <div class="w-80 h-48 bg-white flex items-center justify-center border-4 border-white shadow-lg mb-6">
+    <img [src]="data.player.image"
+         alt="{{ data.player.name }}"
+         class="w-full h-full object-cover"
+         (load)="onImageLoad()"
+         (error)="onImageError()">
+  </div>
+
+  <!-- Player Name - Even larger text for emphasis -->
+  <h2 class="text-5xl font-bold text-white mb-4">{{ data.player.name }}</h2>
+
+  <!-- Player Position - Inside a bordered box -->
+  <div class="border-2 border-white text-white px-6 py-2 rounded-md mb-8">
+    <p class="text-2xl">{{ data.player.position }}</p>
+  </div>
+
+  <!-- Subtle Inputs: Amount and Team - Styled minimally and placed at the bottom -->
+  <div class="w-full max-w-sm mt-auto bg-opacity-80 backdrop-blur-sm bg-white p-4 rounded-md shadow-md">
+    <mat-form-field class="w-full">
+      <input type="number" matInput placeholder="Enter amount" [(ngModel)]="amount" class="text-sm">
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-select placeholder="Select team" [(ngModel)]="selectedTeam" class="text-sm">
+        <mat-option *ngFor="let team of data?.teams" [value]="team">{{ team.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Add Button -->
+  <button class="mt-6 bg-blue-500 text-white py-3 px-6 rounded-md" [disabled]="!amount || !selectedTeam" (dblclick)="updatePlayerDetails()">Add</button>
+</div>

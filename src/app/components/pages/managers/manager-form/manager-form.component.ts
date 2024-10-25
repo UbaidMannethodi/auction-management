@@ -144,7 +144,6 @@ export class ManagerFormComponent implements OnInit {
       reader.readAsDataURL(this.imageFile); // Read file as data URL
       this.managerForm.patchValue({ image: this.imageFile });
     }
-    console.log('man', this.managerForm)
   }
 
   onCancel(): void {

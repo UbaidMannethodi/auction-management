@@ -9,3 +9,11 @@ export interface Team {
   manager?: any;
   players?: any[];
 }
+
+export interface TeamStatus {
+  availableAmount: number;
+  balanceAmount: number;
+  selectedPositions: {[key: string]: Player[]};
+  PositionToSelect: {[key: string]: Player[]};
+}
+

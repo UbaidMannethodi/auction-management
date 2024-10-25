@@ -67,7 +67,7 @@ export class TeamFormComponent implements OnInit {
     private teamService: TeamService,
     private toastr: ToastrService,
     private dialogRef: MatDialogRef<TeamFormComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {editMode: boolean, team: Team }
+    @Inject(MAT_DIALOG_DATA) public data: {editMode: boolean, team: Team, allTeams: Team[] }
   ) {
     this.teamForm = this.fb.group({
       name: ['', Validators.required],
@@ -80,14 +80,16 @@ export class TeamFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.teamData = this.data?.team as any;
-    this.getManagers();
-    this.getPlayers();
+
+    if (this.data?.editMode) {
+      this.getManagers();
+      this.getPlayers();
+    }
     this.createForm();
   }
 
   createForm(): void {
     const editingData: Team = JSON.parse(JSON.stringify(this.teamData ?? {}));
-    console.log('editingData', editingData);
     this.teamForm = this.fb.group({
       id: [editingData?.id],
       name: [editingData?.name, Validators.required],
@@ -106,7 +108,15 @@ export class TeamFormComponent implements OnInit {
     try {
       this.loading.managers = true;
       this.managers = await this.managersService.getManagers();
+      // const managers = await this.managersService.getManagers();
+      // const managerIds = this.data?.allTeams
+      //   .filter(team => team.manager)  // Filter teams that have a manager
+      //   .map(team => team.manager.id);  // Extract manager ids
+      // const currentTeamManagerID = this.teamData?.manager?.id;
+      // const filteredArray = managers.filter(item => !managerIds.includes(currentTeamManagerID));
+     // this.managers = managers.filter( manager => manager.id !== currentTeamManagerID);
     } catch (error: any) {
+      this.toastr.error(error, 'Something went wrong.');
       this.loading.managers= false;
     } finally {
       this.loading.managers = false;
@@ -114,10 +124,17 @@ export class TeamFormComponent implements OnInit {
   }
 
   async getPlayers() {
+
     try {
       this.loading.players = true;
-      this.players = await this.playerService.getPlayers();
+      const players = await this.playerService.getPlayers();
+      const overallSelectedPlayerIds = (this.data?.allTeams || []).flatMap(team => team?.players.map(player => player.id));
+      const currentTeamPlayersIDs: string[] = (this.teamData?.players || []).map( ee => ee?.id);
+      const filteredArray = overallSelectedPlayerIds.filter(item => !currentTeamPlayersIDs.includes(item));
+
+      this.players = players.filter( pl => !filteredArray.includes(pl.id));
     } catch (error: any) {
+      this.toastr.error(error, 'Something went wrong.');
       this.loading.players = false;
     } finally {
       this.loading.players = false;
@@ -153,7 +170,6 @@ export class TeamFormComponent implements OnInit {
       try {
         this.loading.posting = true;
         await this.teamService.editTeam(this.teamForm?.value?.id, this.teamForm?.value).then( (players) => {
-          console.log('Team updated', players);
           this.toastr.success('', 'Team modified successfully.');
           this.dialogRef.close({type: 'success', players});
           this.loading.posting = false;

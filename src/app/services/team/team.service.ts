@@ -13,8 +13,10 @@ import {
   where
 } from "@angular/fire/firestore";
 import {doc} from "firebase/firestore";
-import {Team} from "../../model/team";
-import {Manager} from "../../model/manager";
+import {Team, TeamStatus} from "../../model/team";
+import {environment} from "../../../environments/environment";
+import {DataUtils} from "../../utils/data-utils";
+
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +31,45 @@ export class TeamService {
     this.teamsCollection = collection(this.firestore, this.TABLE_TEAMS);
   }
 
+
+  getTeamStatus(team: Team): TeamStatus {
+    if (team) {
+      const totalPrice = team?.players.reduce((sum, player) => {
+        return sum + (player?.price || 0);
+      }, 0);
+
+      const groupedPlayersByPosition = team?.players.reduce((acc, player) => {
+        if (!acc[player?.position]) {
+          acc[player?.position] = [];
+        }
+        acc[player?.position].push(player);
+        return acc;
+      }, {} as { [key: string]: any[] });
+
+      const selectedPositions = Object.keys(groupedPlayersByPosition || {});
+      const positions = DataUtils.playerPositions.map( position => position.id);
+      const positionToSelect: any = positions.filter(item => !selectedPositions.includes(item));
+
+      const teamStatus: any = {};
+      teamStatus.availableAmount = environment.team.availableAmount;
+      teamStatus.balanceAmount = environment.team.availableAmount - totalPrice;
+      teamStatus.selectedPositions = groupedPlayersByPosition;
+      teamStatus.PositionToSelect = positionToSelect;
+      return teamStatus;
+    } else {
+      return null;
+    }
+  }
+
+  getTeamByPlayerId(teams: Team[], playerId: string) {
+    if (!teams?.length || !playerId) {
+      return null;
+    }
+    return teams.find(team =>
+      team.players && team.players.some(player => player.id === playerId)
+    );
+  }
+
   async addTeam(team: Team) {
     const teamCollection = collection(this.firestore, this.TABLE_TEAMS);
     const newDocRef = doc(teamCollection);
@@ -38,10 +79,10 @@ export class TeamService {
     await setDoc(newDocRef, team);
   }
 
-  // async getTeam(): Promise<Team[]> {
-  //   const snapshot = await getDocs(this.teamsCollection);
-  //   return snapshot.docs.map(doc => doc.data()) as Team[];
-  // }
+  async getTeamBasicDetails(): Promise<Team[]> {
+    const snapshot = await getDocs(this.teamsCollection);
+    return snapshot.docs.map(doc => doc.data()) as Team[];
+  }
 
   // Method to fetch all teams with their managers and players in a single batch
   async getTeam(): Promise<any[]> {
@@ -50,7 +91,6 @@ export class TeamService {
     // Fetch all teams
     const teamSnapshots = await getDocs(teamsCollection);
     const teams = teamSnapshots.docs.map(doc => doc.data()) as Team[];
-    console.log('team', teams)
     const managerIds = teams.map(team => team.manager) || [];
     const playerIds = teams.reduce((ids, team) => ids.concat(team.players), [] as string[]) || [];
 
@@ -80,10 +120,6 @@ export class TeamService {
 
     // Map team details to include manager and players
     return teams.map(team => ({
-      // id: team.id,
-      // name: team.name,
-      // primaryColor: team.primaryColor,
-      // secondaryColor: team.secondaryColor,
       ...team,
       manager: managers[team.manager],
       players: (team.players || []).map(playerId => players[playerId]),

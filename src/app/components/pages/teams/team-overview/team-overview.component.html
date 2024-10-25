@@ -1,1 +1,38 @@
-<p>team-overview works!</p>
+<div class="bg-[url('/assets/bg-image.jpg')] bg-cover h-full w-full p-4 rounded-lg">
+  <!-- Manager Section -->
+  <div class="flex justify-center items-center mb-8">
+    <div class="text-center">
+      <img [src]="data?.team?.manager?.image" alt="Manager" class="w-24 h-24 border-4 border-gray-300 rounded-full mx-auto">
+      <p class="mt-2 text-lg font-semibold">{{ data?.team?.manager?.name }}</p>
+      <p class="text-gray-600">Manager</p>
+    </div>
+  </div>
+
+  <!-- Connector Lines -->
+  <div class="relative">
+    <div class="absolute left-1/2 top-0 h-full w-1 bg-gray-400"></div>
+
+    <!-- Goalkeeper Section -->
+    <div class="flex justify-center mb-8" *ngIf="playerService?.getCaptain(data?.team?.players)?.id">
+      <div class="text-center">
+        <img [src]="playerService?.getCaptain(data?.team?.players)?.image" alt="Goalkeeper" class="w-32 h-32 border-4 border-gray-300 rounded-full mx-auto">
+        <p class="mt-2 text-lg font-semibold">{{ playerService?.getCaptain(data?.team?.players)?.name }}</p>
+        <p class="text-gray-600">{{ playerService?.getCaptain(data?.team?.players)?.position }}</p>
+      </div>
+    </div>
+
+    <!-- Players Section -->
+    <div class="grid grid-cols-3 gap-6">
+      <div *ngFor="let player of data?.team?.players" class="flex flex-col items-center">
+        <img [src]="player?.image" alt="Player" class="w-20 h-20 border-4 border-gray-300 rounded-full">
+        <p class="mt-2 text-lg font-semibold">{{ player?.name }}</p>
+        <p class="text-gray-600">{{ player?.position }}</p>
+
+        <!-- Connector Line to the Player -->
+        <div class="relative">
+          <div class="absolute left-1/2 top-0 w-1 h-12 bg-gray-400"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

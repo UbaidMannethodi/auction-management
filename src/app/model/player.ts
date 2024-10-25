@@ -4,5 +4,6 @@ export interface Player {
   tokenNo: number;
   position?: string;
   price?: number;
+  isCaptain: boolean;
   image: string;
 }

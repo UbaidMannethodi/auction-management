@@ -12,8 +12,8 @@ import {Team} from "../../../model/team";
 import {TeamFormComponent} from "./team-form/team-form.component";
 import {MatIcon} from "@angular/material/icon";
 import {NgxLoadingModule} from "ngx-loading";
-import {Player} from "../../../model/player";
 import {TeamOverviewComponent} from "./team-overview/team-overview.component";
+import {TeamStatusComponent} from "./team-status/team-status.component";
 
 
 @Component({
@@ -54,7 +54,7 @@ export class TeamsComponent implements OnInit {
     try {
       this.loading = true;
       this.teams = await this.teamService.getTeam();
-      console.log('team', this.teams);
+
     } catch (error: any) {
       this.loading = false;
       this.toastr.error(error, 'Something went wrong.');
@@ -96,7 +96,7 @@ export class TeamsComponent implements OnInit {
     const editMode = !!team
     const dialogRef = this.dialog.open(TeamFormComponent, {
       width: '400px',
-      data: {editMode, team, totalTeams: this.teams?.length}
+      data: {editMode, team, totalTeams: this.teams?.length, allTeams: this.teams}
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -106,15 +106,25 @@ export class TeamsComponent implements OnInit {
     });
   }
 
-  openTeamOverviewDialog(player?:Player): void {
+  openTeamOverviewDialog(team:Team): void {
     const dialogRef = this.dialog.open(TeamOverviewComponent, {
-      width: '400px',
-      data: {player}
+      width: '100vw',
+      height: 'auto',
+      panelClass: 'full-screen-dialog',
+      data: {team}
     });
+  }
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result?.type === 'success') {
-        this.getTeams();
+  openTeamStatusDialog(team:Team): void {
+    const dialogRef = this.dialog.open(TeamStatusComponent, {
+      width: '100vw',
+      height: 'auto',
+      data: {
+        team: team,
+        availableBalance: 22,
+        selectedPositions: ['3432', '342'],
+        positionsToBeSelected: ['3432', '342'],
+        players: team.players
       }
     });
   }

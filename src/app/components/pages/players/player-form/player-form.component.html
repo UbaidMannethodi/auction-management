@@ -33,6 +33,9 @@
       <mat-error *ngIf="playerForm.get('position')?.hasError('required')">Position is required.</mat-error>
     </mat-form-field>
 
+    <!-- Mark as Captain -->
+    <mat-checkbox formControlName="isCaptain">Mark as Captain</mat-checkbox>
+
     <!-- Image Upload -->
     <div class="w-full">
       <mat-label><mat-icon>image</mat-icon> Upload Image</mat-label>

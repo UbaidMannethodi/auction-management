@@ -1,31 +1,10 @@
-<!--<div class="bg-football-ground bg-cover min-h-screen flex items-center justify-center p-4 relative">-->
-<!--  &lt;!&ndash; Tokens Grid &ndash;&gt;-->
-<!--  <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-6 w-full max-w-6xl p-8 bg-black bg-opacity-50 rounded-lg shadow-xl">-->
-<!--    <div-->
-<!--      *ngFor="let token of tokens"-->
-<!--      class="relative token-item bg-white rounded-full flex items-center justify-center cursor-pointer text-xl font-bold text-black h-24 w-24 shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300 border border-gray-300"-->
-<!--      [ngClass]="{-->
-<!--        'border-blue-500': selectedTokens.includes(token),-->
-<!--        'bg-gray-200': selectedTokens.includes(token)-->
-<!--      }"-->
-<!--      (click)="toggleTokenSelection(token)"-->
-<!--    >-->
-<!--      &lt;!&ndash; Token Number in the background &ndash;&gt;-->
-<!--      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl font-semibold opacity-50"-->
-<!--           [ngClass]="{'opacity-50': selectedTokens.includes(token)}">-->
-<!--        {{ token }}-->
-<!--      </div>-->
-
-<!--      &lt;!&ndash; Selection Indicator (Check or Cross) &ndash;&gt;-->
-<!--      <div *ngIf="selectedTokens.includes(token)" class="absolute inset-0 flex items-center justify-center text-blue-500 text-4xl z-10">-->
-<!--        ❌ &lt;!&ndash; or ✔️ depending on your design preference &ndash;&gt;-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
+<ngx-loading
+  [show]="loading.player || loading.team"
+  [config]="{ backdropBorderRadius: '3px' }"
+></ngx-loading>
 
 
-<div class="bg-football-ground bg-cover min-h-screen p-4 relative overflow-hidden">
+<div class="bg-football-ground bg-cover bg-fixed min-h-screen p-4 relative overflow-hidden">
   <!-- Header Section -->
   <div class="flex items-center mb-8">
     <img src="path/to/logo.png" alt="Logo" class="w-24 h-24 object-cover mr-4" /> <!-- Adjust the path to your logo -->
@@ -35,23 +14,20 @@
     </div>
   </div>
 
-  <!-- Title -->
-  <h1 class="text-4xl font-bold text-white text-center mb-8">Football Players Auction</h1>
-
   <!-- Team Details Section -->
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 w-full max-w-6xl mx-auto p-4 bg-black bg-opacity-50 rounded-lg shadow-lg">
     <div *ngFor="let t of teams"
          class="relative flex flex-col items-center justify-center p-4 rounded-lg shadow-md overflow-hidden"
-         [ngStyle]="{'background-color': t.bg}">
+         [ngStyle]="{'background-color': t.primaryColor}">
 
       <!-- Team Name in Primary Color -->
       <h2 class="relative z-10 text-2xl font-bold mb-2" [ngStyle]="{'color': t.primaryColor}">
-        {{ t.team }}
+        {{ t.name }}
       </h2>
 
       <!-- Total and Balance in simple form -->
       <p class="relative z-10 text-lg font-semibold">
-        {{ t.balance }}/{{ t.total }}
+        {{ teamService?.getTeamStatus(t)?.balanceAmount }}/{{  teamService?.getTeamStatus(t)?.availableAmount }}
       </p>
 
       <!-- Background Overlay Design for Team Color (Circle) -->
@@ -66,22 +42,22 @@
        style="max-height: 50vh;">
     <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-6 w-full p-8">
       <div
-        *ngFor="let token of tokens"
+        *ngFor="let player of players"
         class="relative token-item bg-white rounded-full flex items-center justify-center cursor-pointer text-xl font-bold text-black h-24 w-24 shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300 border border-gray-300"
         [ngClass]="{
-          'border-blue-500': selectedTokens.includes(token),
-          'bg-gray-200': selectedTokens.includes(token)
+          'border-blue-500': player?.price,
+          'bg-gray-200': player?.price
         }"
-        (click)="toggleTokenSelection(token)"
+        (dblclick)="openPlayerOverviewDialog(player)"
       >
         <!-- Token Number in the background -->
         <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl font-semibold opacity-50"
-             [ngClass]="{'opacity-50': selectedTokens.includes(token)}">
-          {{ token }}
+             [ngClass]="{'opacity-50': player?.price}">
+          {{ player.tokenNo }}
         </div>
 
         <!-- Selection Indicator -->
-        <div *ngIf="selectedTokens.includes(token)" class="absolute inset-0 flex items-center justify-center text-blue-500 text-4xl z-10">
+        <div *ngIf="player?.price" class="absolute inset-0 flex items-center justify-center text-blue-500 text-4xl z-10">
           ❌ <!-- or ✔️ -->
         </div>
       </div>

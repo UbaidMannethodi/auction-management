@@ -1,0 +1,16 @@
+<div class="bg-white bg-opacity-90 rounded-lg p-6 shadow-lg">
+  <h2 class="text-3xl font-bold text-center mb-6" [style.color]="data.team.color">{{ data.team.name }}</h2>
+  <div class="text-center mb-4">
+    <p class="text-lg font-semibold text-gray-800">Available Balance: <span class="text-blue-600 font-bold">{{ data.availableBalance }}</span></p>
+    <p class="text-lg font-semibold text-gray-800">Selected Positions: <span class="text-blue-600 font-bold">{{ consolidatePositions(data.selectedPositions) }}</span></p>
+    <p class="text-lg font-semibold text-gray-800">Positions to be Selected: <span class="text-blue-600 font-bold">{{ consolidatePositions(data.positionsToBeSelected) }}</span></p>
+  </div>
+
+  <div class="grid grid-cols-3 gap-6">
+    <div *ngFor="let player of data.players" class="flex flex-col items-center border border-gray-300 p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+      <img [src]="player.image" alt="Player" class="w-32 h-32 border-4 border-blue-600 rounded-full mb-2">
+      <p class="text-lg font-semibold text-gray-800">{{ player.name }}</p>
+      <p class="text-gray-600">Price: <span class="font-bold text-blue-600">{{ player.price }}</span></p>
+    </div>
+  </div>
+</div>

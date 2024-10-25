@@ -19,6 +19,7 @@ import {Player} from "../../../../model/player";
 import {MatOption, MatSelect} from "@angular/material/select";
 import {ImageUtils} from "../../../../utils/image-utils";
 import {DataUtils} from "../../../../utils/data-utils";
+import {MatCheckbox} from "@angular/material/checkbox";
 
 @Component({
   selector: 'app-player-form',
@@ -39,6 +40,7 @@ import {DataUtils} from "../../../../utils/data-utils";
     MatSelect,
     MatOption,
     NgForOf,
+    MatCheckbox,
   ],
 
   providers: [],
@@ -72,19 +74,17 @@ export class PlayerFormComponent implements OnInit {
   ngOnInit(): void {
     this.playerData = this.data?.player as any;
     this.createForm();
-    console.log('editing', this.data)
   }
 
   createForm(): void {
     const editingData: Player = JSON.parse(JSON.stringify(this.playerData ?? {}));
-    console.log('editingData', editingData);
     this.playerForm = this.fb.group({
       id: [editingData?.id],
       tokenNo: [editingData?.tokenNo ?? (this.data.totalPlayers + 1), Validators.required],
       name: [editingData?.name, Validators.required],
       position: [editingData?.position, Validators.required],
       price: [editingData?.price],
-      // team: [editingData?.team, Validators.required],
+      isCaptain: [editingData?.isCaptain],
       image: [editingData?.image, Validators.required],
     });
 
@@ -139,7 +139,6 @@ export class PlayerFormComponent implements OnInit {
           image: imageUrl
         };
         await this.playerService.editPlayer(this.playerData?.id, playerData).then( (players) => {
-          console.log('players updated', players);
           this.toastr.success('', 'Player modified successfully.');
           this.dialogRef.close({type: 'success', players});
           this.loading = false;
@@ -171,8 +170,6 @@ export class PlayerFormComponent implements OnInit {
       reader.readAsDataURL(this.imageFile); // Read file as data URL
       this.playerForm.patchValue({ image: this.imageFile });
     }
-
-    console.log('ss', this.playerForm)
   }
 
   onCancel(): void {

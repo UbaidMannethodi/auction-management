@@ -17,16 +17,22 @@
 
   <!-- Players Table/Card List -->
   <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-    <div *ngFor="let player of players" class="bg-white rounded-lg shadow p-4 flex flex-col player-card">
+    <div *ngFor="let player of players; let i = index" class="bg-white rounded-lg shadow p-4 flex flex-col relative player-card">
+      <!-- Serial number in the top-left corner -->
+      <span class="absolute top-2 left-2 text-sm font-bold text-gray-600">{{ player.tokenNo }}</span>
+
+      <!-- Player image and details -->
       <img [src]="player.image" alt="Player Image" class="w-24 h-24 rounded-full mx-auto mb-4">
       <h3 class="text-lg font-semibold text-center">{{ player.name }}</h3>
       <p class="text-gray-500 text-center">{{ getPosition(player.position) }}</p>
       <p class="text-gray-700 text-center mt-1">₹{{ player.price || 0 }}</p>
-<!--      <p class="text-gray-500 text-center">{{ player.team }}</p>-->
+
+      <!-- Edit/Delete buttons -->
       <div class="flex justify-between mt-4">
         <button mat-button color="accent" (click)="editPlayer(player)">Edit</button>
         <button mat-button color="warn" (click)="openConfirmDialog(player)">Delete</button>
       </div>
     </div>
   </div>
+
 </div>

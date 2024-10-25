@@ -9,6 +9,11 @@ export const environment = {
     appId: "1:556634204208:web:da6154719d0b076e6c25f5"
   },
 
+  team: {
+    availableAmount: 700,
+    totalPlayersCount: 6
+  },
+
   cred: {
     username: 'universal',
     password: 'universal@56',

@@ -29,6 +29,10 @@ export class PlayerService {
     this.playersCollection = collection(this.firestore, this.TABLE_PLAYERS);
   }
 
+  getCaptain(players: Player[]): Player {
+    return players.find( (p) => p?.isCaptain === true) || null;
+  }
+
 
   async addPlayer(student: Player) {
     // Get a reference to the 'players' collection
