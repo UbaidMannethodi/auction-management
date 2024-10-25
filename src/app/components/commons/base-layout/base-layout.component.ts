@@ -37,7 +37,7 @@ export class BaseLayoutComponent {
     dialogRef.afterClosed().subscribe((confirmed: boolean) => {
       if (confirmed) {
         localStorage.removeItem('token');
-        this.router.navigate(['/']);
+        this.router.navigate(['/login']);
       }
     });
   }

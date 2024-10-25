@@ -6,7 +6,7 @@ import {environment} from "../../environments/environment";
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
+export class GuestGuard implements CanActivate {
 
   constructor(private router: Router) {}
 
@@ -16,11 +16,10 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
     if (localStorage.getItem('token') && localStorage.getItem('token') === environment.cred.token) {
-      return true;
-    } else {
-      localStorage.clear();
-      this.router.navigateByUrl('/login');
+      this.router.navigateByUrl('/players');
       return false;
+    } else {
+      return true;
     }
   }
 
