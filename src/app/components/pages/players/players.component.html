@@ -1,23 +1,41 @@
-<ngx-loading
-  [show]="loading"
-  [config]="{ backdropBorderRadius: '3px' }"
-></ngx-loading>
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
 
 <div class="p-6 bg-gray-100 min-h-screen">
   <!-- Total Players Card -->
   <div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg shadow-lg p-6 mb-6 flex justify-between items-center">
     <div>
       <h2 class="text-xl font-bold">Total Players</h2>
-      <p class="text-4xl mt-2">{{ players.length }}</p>
+      <p class="text-4xl mt-2">{{ filteredPlayers.length }}</p>
     </div>
-    <button mat-raised-button color="primary" (click)="openAddPlayerDialog()">
-      Add Player
-    </button>
+    <button mat-raised-button color="primary" (click)="openAddPlayerDialog()">Add Player</button>
+  </div>
+
+  <!-- Search and Filter -->
+  <div class="mb-6 flex flex-wrap gap-4">
+    <!-- Search Bar -->
+    <input
+      type="text"
+      placeholder="Search players..."
+      [(ngModel)]="searchTerm"
+      class="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 flex-1"
+    />
+
+    <!-- Position Filter Dropdown -->
+    <select
+      [(ngModel)]="selectedPosition"
+      class="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+    >
+      <option value="">All Positions</option>
+      <option *ngFor="let position of positions" [value]="position.id">{{ position.name }}</option>
+    </select>
   </div>
 
   <!-- Players Table/Card List -->
   <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-    <div *ngFor="let player of players; let i = index" class="bg-white rounded-lg shadow p-4 flex flex-col relative player-card">
+    <div
+      *ngFor="let player of filteredPlayers"
+      class="bg-white rounded-lg shadow p-4 flex flex-col relative player-card"
+    >
       <!-- Serial number in the top-left corner -->
       <span class="absolute top-2 left-2 text-sm font-bold text-gray-600">{{ player.tokenNo }}</span>
 
@@ -34,5 +52,5 @@
       </div>
     </div>
   </div>
-
 </div>
+

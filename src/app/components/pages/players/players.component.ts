@@ -9,6 +9,7 @@ import {NgxLoadingModule} from "ngx-loading";
 import {ToastrService} from "ngx-toastr";
 import {ConfirmDialogComponent} from "../../commons/confirm-dialog/confirm-dialog.component";
 import {DataUtils} from "../../../utils/data-utils";
+import {FormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-players',
@@ -17,7 +18,8 @@ import {DataUtils} from "../../../utils/data-utils";
     CurrencyPipe,
     NgForOf,
     MatButton,
-    NgxLoadingModule
+    NgxLoadingModule,
+    FormsModule
   ],
   templateUrl: './players.component.html',
   styleUrl: './players.component.scss'
@@ -25,7 +27,11 @@ import {DataUtils} from "../../../utils/data-utils";
 export class PlayersComponent implements OnInit {
 
   players: Player[] = [];
+  positions = DataUtils.playerPositions;
   loading = false;
+
+  searchTerm: string = '';
+  selectedPosition: string = '';
 
   constructor(private dialog: MatDialog,
               private playerService: PlayerService,
@@ -40,12 +46,20 @@ export class PlayersComponent implements OnInit {
     try {
       this.loading = true;
       this.players = await this.playerService.getPlayers();
+      this.players = this.players.sort((a, b) => a.tokenNo - b.tokenNo);
     } catch (error: any) {
       this.loading = false;
       this.toastr.error(error, 'Something went wrong.');
     } finally {
       this.loading = false;
     }
+  }
+
+  get filteredPlayers() {
+    return this.players.filter(player =>
+      player.name.toLowerCase().includes(this.searchTerm.toLowerCase()) &&
+      (this.selectedPosition ? player.position === this.selectedPosition : true)
+    );
   }
 
   editPlayer(player: Player): void {
