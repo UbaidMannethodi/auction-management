@@ -26,7 +26,6 @@ import {FormsModule} from "@angular/forms";
 })
 export class PlayersComponent implements OnInit {
 
-  players: Player[] = [];
   positions = DataUtils.playerPositions;
   loading = false;
 
@@ -34,7 +33,7 @@ export class PlayersComponent implements OnInit {
   selectedPosition: string = '';
 
   constructor(private dialog: MatDialog,
-              private playerService: PlayerService,
+              public playerService: PlayerService,
               private toastr: ToastrService,
   ) {}
 
@@ -42,11 +41,15 @@ export class PlayersComponent implements OnInit {
     this.getPlayers();
   }
 
-  async getPlayers() {
+  async getPlayers(forceFetch?: boolean, showLoader = true) {
     try {
-      this.loading = true;
-      this.players = await this.playerService.getPlayers();
-      this.players = this.players.sort((a, b) => a.tokenNo - b.tokenNo);
+      if (showLoader) {
+        this.loading = true;
+      }
+      if (!this.playerService?.players?.length || forceFetch) {
+        this.playerService.players = await this.playerService.getPlayers();
+      }
+      this.playerService.players = this.playerService.players.sort((a, b) => a.tokenNo - b.tokenNo);
     } catch (error: any) {
       this.loading = false;
       this.toastr.error(error, 'Something went wrong.');
@@ -56,7 +59,7 @@ export class PlayersComponent implements OnInit {
   }
 
   get filteredPlayers() {
-    return this.players.filter(player =>
+    return this.playerService.players.filter(player =>
       player.name.toLowerCase().includes(this.searchTerm.toLowerCase()) &&
       (this.selectedPosition ? player.position === this.selectedPosition : true)
     );
@@ -90,7 +93,8 @@ export class PlayersComponent implements OnInit {
       this.loading = false;
       this.toastr.error(error, 'Something went wrong.');
     } finally {
-      this.players = this.players.filter(p => p.id !== player.id);
+      this.playerService.players = this.playerService.players.filter(p => p.id !== player.id);
+      this.getPlayers(true, true);
       this.loading = false;
     }
   }
@@ -104,12 +108,12 @@ export class PlayersComponent implements OnInit {
     const editMode = !!player
     const dialogRef = this.dialog.open(PlayerFormComponent, {
       width: '400px',
-      data: {editMode, player, totalPlayers: this.players?.length}
+      data: {editMode, player, totalPlayers: this.playerService.players?.length}
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result?.type === 'success') {
-        this.getPlayers();
+        this.getPlayers(true);
       }
     });
   }

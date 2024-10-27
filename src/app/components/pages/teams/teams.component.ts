@@ -38,11 +38,10 @@ import {TeamStatusComponent} from "./team-status/team-status.component";
 })
 export class TeamsComponent implements OnInit {
 
-  teams: Team[] = [];
   loading = false;
 
   constructor(private dialog: MatDialog,
-              private teamService: TeamService,
+              public teamService: TeamService,
               private toastr: ToastrService,
   ) {}
 
@@ -50,10 +49,14 @@ export class TeamsComponent implements OnInit {
     this.getTeams();
   }
 
-  async getTeams() {
+  async getTeams(forceFetch?: boolean, showLoader = true) {
     try {
-      this.loading = true;
-      this.teams = await this.teamService.getTeam();
+      if (showLoader) {
+        this.loading = true;
+      }
+      if (!this.teamService?.teams?.length || forceFetch) {
+        this.teamService.teams = await this.teamService.getTeam();
+      }
 
     } catch (error: any) {
       this.loading = false;
@@ -87,7 +90,8 @@ export class TeamsComponent implements OnInit {
       this.loading = false;
       this.toastr.error(error, 'Something went wrong.');
     } finally {
-      this.teams = this.teams.filter(p => p.id !== team.id);
+      this.teamService.teams = this.teamService.teams.filter(p => p.id !== team.id);
+      this.getTeams(true, true);
       this.loading = false;
     }
   }
@@ -96,12 +100,12 @@ export class TeamsComponent implements OnInit {
     const editMode = !!team
     const dialogRef = this.dialog.open(TeamFormComponent, {
       width: '400px',
-      data: {editMode, team, totalTeams: this.teams?.length, allTeams: this.teams}
+      data: {editMode, team, totalTeams: this.teamService.teams?.length, allTeams: this.teamService.teams}
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result?.type === 'success') {
-        this.getTeams();
+        this.getTeams(true);
       }
     });
   }

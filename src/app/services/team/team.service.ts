@@ -26,6 +26,7 @@ export class TeamService {
   private TABLE_TEAMS = DbConstants.TABLE_TEAMS
 
   teamsCollection: CollectionReference;
+  teams: Team[] = [];
 
   constructor(private firestore: Firestore) {
     this.teamsCollection = collection(this.firestore, this.TABLE_TEAMS);
@@ -93,7 +94,7 @@ export class TeamService {
     const teams = teamSnapshots.docs.map(doc => doc.data()) as Team[];
     const managerIds = teams.map(team => team.manager) || [];
     const playerIds = teams.reduce((ids, team) => ids.concat(team.players), [] as string[]) || [];
-
+    console.log('teams', teams)
     // Batch fetch all managers
     let managers: any;
     if (managerIds?.length) {
@@ -117,12 +118,13 @@ export class TeamService {
         return acc;
       }, {} as Record<string, any>);
     }
+    console.log('players', players, playerIds);
 
     // Map team details to include manager and players
     return teams.map(team => ({
       ...team,
-      manager: managers[team.manager],
-      players: (team.players || []).map(playerId => players[playerId]),
+      manager: managers[team.manager] || null,
+      players: (team.players || []).map(playerId => players[playerId] || null).filter(Boolean)
     }));
   }
 

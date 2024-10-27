@@ -23,20 +23,20 @@
       <input matInput type="color" formControlName="secondaryColor" />
     </mat-form-field>
 
-    <mat-form-field class="w-full" appearance="fill" *ngIf="data.editMode">
+    <mat-form-field class="w-full" appearance="fill">
       <mat-label><mat-icon>work</mat-icon> Manager</mat-label>
       <mat-select formControlName="manager" placeholder="Select manager">
-        <mat-option *ngFor="let manager of managers" [value]="manager.id">
+        <mat-option *ngFor="let manager of managersService.managers" [value]="manager.id">
           <img [src]="manager.image" alt="{{manager.name}}" class="inline-block w-6 h-6 mr-2" />
           {{ manager.name }}
         </mat-option>
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field class="w-full" appearance="fill" *ngIf="data.editMode">
+    <mat-form-field class="w-full" appearance="fill">
       <mat-label><mat-icon>work</mat-icon> Players</mat-label>
       <mat-select formControlName="players" multiple placeholder="Select players">
-        <mat-option *ngFor="let player of players" [value]="player.id">
+        <mat-option *ngFor="let player of playerService.players" [value]="player.id">
           <img [src]="player.image" alt="{{player.name}}" class="inline-block w-6 h-6 mr-2" />
           {{ player.name }}
         </mat-option>

@@ -22,6 +22,7 @@ export class ManagersService {
   private TABLE_MANAGERS = DbConstants.TABLE_MANAGERS
 
   managersCollection: CollectionReference;
+  managers: Manager[] = [];
 
   constructor(private firestore: Firestore) {
     this.managersCollection = collection(this.firestore, this.TABLE_MANAGERS);

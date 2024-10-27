@@ -24,6 +24,7 @@ export class PlayerService {
   private TABLE_PLAYERS = DbConstants.TABLE_PLAYERS
 
   playersCollection: CollectionReference;
+  players: Player[] = [];
 
   constructor(private firestore: Firestore) {
     this.playersCollection = collection(this.firestore, this.TABLE_PLAYERS);

@@ -15,7 +15,6 @@ import {MatIcon} from "@angular/material/icon";
 import {NgxLoadingModule} from "ngx-loading";
 import {MatOption} from "@angular/material/core";
 import {MatSelect} from "@angular/material/select";
-import {Manager} from "../../../../model/manager";
 import {Player} from "../../../../model/player";
 import {ManagersService} from "../../../../services/managers/managers.service";
 import {PlayerService} from "../../../../services/players/player.service";
@@ -57,14 +56,12 @@ export class TeamFormComponent implements OnInit {
 
   teamForm: FormGroup;
   teamData: Team;
-  managers: Manager[] = [];
-  players: Player[] = [];
 
   constructor(
     private fb: FormBuilder,
-    private managersService: ManagersService,
-    private playerService: PlayerService,
-    private teamService: TeamService,
+    public managersService: ManagersService,
+    public playerService: PlayerService,
+    public teamService: TeamService,
     private toastr: ToastrService,
     private dialogRef: MatDialogRef<TeamFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {editMode: boolean, team: Team, allTeams: Team[] }
@@ -107,7 +104,7 @@ export class TeamFormComponent implements OnInit {
   async getManagers() {
     try {
       this.loading.managers = true;
-      this.managers = await this.managersService.getManagers();
+      this.managersService.managers = await this.managersService.getManagers();
       // const managers = await this.managersService.getManagers();
       // const managerIds = this.data?.allTeams
       //   .filter(team => team.manager)  // Filter teams that have a manager
@@ -123,16 +120,21 @@ export class TeamFormComponent implements OnInit {
     }
   }
 
-  async getPlayers() {
+  async getPlayers(forceFetch?: boolean) {
 
     try {
       this.loading.players = true;
-      const players = await this.playerService.getPlayers();
+      let players: Player[] = [];
+      if (!this.playerService?.players?.length || forceFetch) {
+        players = await this.playerService.getPlayers();
+      } else {
+        players = this.playerService.players;
+      }
       const overallSelectedPlayerIds = (this.data?.allTeams || []).flatMap(team => team?.players.map(player => player.id));
       const currentTeamPlayersIDs: string[] = (this.teamData?.players || []).map( ee => ee?.id);
       const filteredArray = overallSelectedPlayerIds.filter(item => !currentTeamPlayersIDs.includes(item));
 
-      this.players = players.filter( pl => !filteredArray.includes(pl.id));
+      this.playerService.players = players.filter( pl => !filteredArray.includes(pl.id));
     } catch (error: any) {
       this.toastr.error(error, 'Something went wrong.');
       this.loading.players = false;

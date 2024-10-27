@@ -9,7 +9,7 @@
   <div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg shadow-lg p-6 mb-6 flex justify-between items-center">
     <div>
       <h2 class="text-xl font-bold">Total Managers</h2>
-      <p class="text-4xl mt-2">{{ managers.length }}</p>
+      <p class="text-4xl mt-2">{{ managerService.managers.length }}</p>
     </div>
     <button mat-raised-button color="primary" (click)="openAdManagerDialog()">
       Add Manager
@@ -18,7 +18,7 @@
 
   <!-- Players Table/Card List -->
   <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-    <div *ngFor="let manger of managers" class="bg-white rounded-lg shadow p-4 flex flex-col player-card">
+    <div *ngFor="let manger of managerService.managers" class="bg-white rounded-lg shadow p-4 flex flex-col player-card">
       <img [src]="manger.image" alt="Player Image" class="w-24 h-24 rounded-full mx-auto mb-4">
       <h3 class="text-lg font-semibold text-center">{{ manger.name }}</h3>
       <div class="flex justify-between mt-4">

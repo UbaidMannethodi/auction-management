@@ -29,12 +29,10 @@ export class TokenListComponent implements OnInit {
     player: false,
     team: false,
   };
-  players: Player[];
-  teams: Team[];
   environment = environment
 
   constructor(private dialog: MatDialog,
-              private playerService: PlayerService,
+              public playerService: PlayerService,
               public teamService: TeamService,
               private toastr: ToastrService) {}
 
@@ -45,10 +43,12 @@ export class TokenListComponent implements OnInit {
 
 
 
-  async getPlayers() {
+  async getPlayers(forceFetch?: boolean) {
     try {
       this.loading.player = true;
-      this.players = await this.playerService.getPlayers();
+      if (!this.playerService?.players?.length || forceFetch) {
+        this.playerService.players = await this.playerService.getPlayers();
+      }
     } catch (error: any) {
       this.loading.player = false;
       this.toastr.error(error, 'Something went wrong.');
@@ -57,10 +57,12 @@ export class TokenListComponent implements OnInit {
     }
   }
 
-  async getTeam() {
+  async getTeam(forceFetch?: boolean) {
     try {
       this.loading.team = true;
-      this.teams = await this.teamService.getTeam();
+      if (!this.teamService?.teams?.length || forceFetch) {
+        this.teamService.teams = await this.teamService.getTeam();
+      }
     } catch (error: any) {
       this.loading.team = false;
       this.toastr.error(error, 'Something went wrong.');
@@ -75,13 +77,13 @@ export class TokenListComponent implements OnInit {
       height: '95vh', // Full viewport height
       maxWidth: '95vw',
       maxHeight: '95vh',
-      data: {player, teams: this.teams}
+      data: {player, teams: this.teamService.teams}
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result?.success) {
-        this.getPlayers();
-        this.getTeam();
+        this.getPlayers(true);
+        this.getTeam(true);
       }
     });
   }

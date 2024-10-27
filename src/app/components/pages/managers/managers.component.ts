@@ -22,11 +22,10 @@ import {NgxLoadingModule} from "ngx-loading";
 })
 export class ManagersComponent implements OnInit {
 
-  managers: Manager[] = [];
   loading = false;
 
   constructor(private dialog: MatDialog,
-              private managerService: ManagersService,
+              public managerService: ManagersService,
               private toastr: ToastrService,
   ) {}
 
@@ -35,10 +34,14 @@ export class ManagersComponent implements OnInit {
   }
 
 
-  async getManagers() {
+  async getManagers(forceFetch?: boolean, showLoader = true) {
     try {
-      this.loading = true;
-      this.managers = await this.managerService.getManagers();
+      if (showLoader) {
+        this.loading = true;
+      }
+      if (!this.managerService.managers?.length || forceFetch) {
+        this.managerService.managers = await this.managerService.getManagers();
+      }
     } catch (error: any) {
       this.loading = false;
       this.toastr.error(error, 'Something went wrong.');
@@ -75,7 +78,8 @@ export class ManagersComponent implements OnInit {
       this.loading = false;
       this.toastr.error(error, 'Something went wrong.');
     } finally {
-      this.managers = this.managers.filter(p => p.id !== manager.id);
+      this.managerService.managers = this.managerService.managers.filter(p => p.id !== manager.id);
+      this.getManagers(true, false);
       this.loading = false;
     }
   }
@@ -89,7 +93,7 @@ export class ManagersComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result?.type === 'success') {
-        this.getManagers();
+        this.getManagers(true);
       }
     });
   }
