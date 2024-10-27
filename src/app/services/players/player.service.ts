@@ -67,7 +67,6 @@ export class PlayerService {
         throw new Error(`Player with ID ${playerId} does not exist.`);
       }
 
-      console.log('Updating player document:', updatedPlayer, playerDocRef);
       await updateDoc(playerDocRef, updatedPlayer);
 
       console.log('Player updated successfully.');

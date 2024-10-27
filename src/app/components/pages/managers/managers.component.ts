@@ -8,6 +8,7 @@ import {ConfirmDialogComponent} from "../../commons/confirm-dialog/confirm-dialo
 import {ManagersService} from "../../../services/managers/managers.service";
 import {ManagerFormComponent} from "./manager-form/manager-form.component";
 import {NgxLoadingModule} from "ngx-loading";
+import {TeamService} from "../../../services/team/team.service";
 
 @Component({
   selector: 'app-managers',
@@ -26,6 +27,7 @@ export class ManagersComponent implements OnInit {
 
   constructor(private dialog: MatDialog,
               public managerService: ManagersService,
+              private teamService: TeamService,
               private toastr: ToastrService,
   ) {}
 
@@ -78,10 +80,16 @@ export class ManagersComponent implements OnInit {
       this.loading = false;
       this.toastr.error(error, 'Something went wrong.');
     } finally {
+      this.updateTeamWhenManagerUpdate(manager.id);
       this.managerService.managers = this.managerService.managers.filter(p => p.id !== manager.id);
       this.getManagers(true, false);
       this.loading = false;
     }
+  }
+
+  async updateTeamWhenManagerUpdate(managerID: string) {
+    await this.teamService.updateTeamsWhenManagerRemoved(managerID);
+    this.teamService.teams = await this.teamService.getTeam();
   }
 
   openAdManagerDialog(manager?: Manager): void {

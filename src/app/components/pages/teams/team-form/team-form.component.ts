@@ -78,10 +78,8 @@ export class TeamFormComponent implements OnInit {
   ngOnInit(): void {
     this.teamData = this.data?.team as any;
 
-    if (this.data?.editMode) {
-      this.getManagers();
-      this.getPlayers();
-    }
+    this.getManagers();
+    this.getPlayers();
     this.createForm();
   }
 

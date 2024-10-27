@@ -10,6 +10,7 @@ import {ToastrService} from "ngx-toastr";
 import {ConfirmDialogComponent} from "../../commons/confirm-dialog/confirm-dialog.component";
 import {DataUtils} from "../../../utils/data-utils";
 import {FormsModule} from "@angular/forms";
+import {TeamService} from "../../../services/team/team.service";
 
 @Component({
   selector: 'app-players',
@@ -34,6 +35,7 @@ export class PlayersComponent implements OnInit {
 
   constructor(private dialog: MatDialog,
               public playerService: PlayerService,
+              public teamService: TeamService,
               private toastr: ToastrService,
   ) {}
 
@@ -93,10 +95,16 @@ export class PlayersComponent implements OnInit {
       this.loading = false;
       this.toastr.error(error, 'Something went wrong.');
     } finally {
+      this.updateTeamWhenPlayerUpdate(player.id);
       this.playerService.players = this.playerService.players.filter(p => p.id !== player.id);
       this.getPlayers(true, true);
       this.loading = false;
     }
+  }
+
+  async updateTeamWhenPlayerUpdate(playerId: string) {
+    await this.teamService.updateTeamWhenPlayerUpdate(playerId);
+    this.teamService.teams = await this.teamService.getTeam();
   }
 
   getPosition(positionID: string): string {

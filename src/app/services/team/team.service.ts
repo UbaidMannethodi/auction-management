@@ -10,7 +10,7 @@ import {
   query,
   setDoc,
   updateDoc,
-  where
+  where, writeBatch
 } from "@angular/fire/firestore";
 import {doc} from "firebase/firestore";
 import {Team, TeamStatus} from "../../model/team";
@@ -94,7 +94,6 @@ export class TeamService {
     const teams = teamSnapshots.docs.map(doc => doc.data()) as Team[];
     const managerIds = teams.map(team => team.manager) || [];
     const playerIds = teams.reduce((ids, team) => ids.concat(team.players), [] as string[]) || [];
-    console.log('teams', teams)
     // Batch fetch all managers
     let managers: any;
     if (managerIds?.length) {
@@ -118,7 +117,6 @@ export class TeamService {
         return acc;
       }, {} as Record<string, any>);
     }
-    console.log('players', players, playerIds);
 
     // Map team details to include manager and players
     return teams.map(team => ({
@@ -141,7 +139,6 @@ export class TeamService {
         throw new Error(`team with ID ${teamID} does not exist.`);
       }
 
-      console.log('Updating team document:', updatedTeam, teamDocRef);
       await updateDoc(teamDocRef, updatedTeam);
 
       console.log('team updated successfully.');
@@ -150,8 +147,82 @@ export class TeamService {
     }
   }
 
+
   async deleteTeam(teamID: string) {
     const teamDoc = doc(this.firestore, this.TABLE_TEAMS, teamID);
     await deleteDoc(teamDoc);
   }
+
+
+  async updateTeamWhenPlayerUpdate(playerID: string): Promise<void> {
+    // Reference to the teams collection
+    const teamCollectionRef = collection(this.firestore, 'teams');
+
+    // Query to find all teams containing the playerID in the 'players' field
+    const teamsWithPlayerQuery = query(teamCollectionRef, where('players', 'array-contains', playerID));
+
+    // Fetch the teams that match the query
+    const teamSnapshots = await getDocs(teamsWithPlayerQuery);
+
+    // Check if there are any teams to update
+    if (!teamSnapshots.empty) {
+      // Initialize the batch
+      const batch = writeBatch(this.firestore);
+
+      teamSnapshots.forEach((teamDoc) => {
+        const teamData = teamDoc.data();
+
+        // Remove the playerID from the players array
+        const updatedPlayers = teamData['players'].filter((id: string) => id !== playerID);
+
+        // Only add to batch if there was a change
+        if (updatedPlayers.length !== teamData['players'].length) {
+          const teamDocRef = doc(this.firestore, 'teams', teamDoc.id);
+          batch.update(teamDocRef, { players: updatedPlayers });
+        }
+      });
+
+      // Commit the batch update if there are changes
+      if (batch) {
+        await batch.commit();
+        console.log('Batch update committed successfully');
+      }
+    } else {
+      console.log('No teams found with the specified player ID');
+    }
+  }
+
+  async updateTeamsWhenManagerRemoved(managerID: string): Promise<void> {
+    // Reference to the teams collection
+    const teamCollectionRef = collection(this.firestore, 'teams');
+
+    // Query to find all teams where the manager field matches the managerID
+    const teamsWithManagerQuery = query(teamCollectionRef, where('manager', '==', managerID));
+
+    // Fetch the teams that match the query
+    const teamSnapshots = await getDocs(teamsWithManagerQuery);
+
+    // Check if there are any teams to update
+    if (!teamSnapshots.empty) {
+      // Initialize the batch
+      const batch = writeBatch(this.firestore);
+
+      teamSnapshots.forEach((teamDoc) => {
+        const teamData = teamDoc.data();
+
+        // Only add to batch if the manager ID matches and needs removal
+        if (teamData['manager'] === managerID) {
+          const teamDocRef = doc(this.firestore, 'teams', teamDoc.id);
+          batch.update(teamDocRef, { manager: null });  // or '' if you prefer an empty string
+        }
+      });
+
+      // Commit the batch update if there are changes
+      await batch.commit();
+      console.log('Batch update committed successfully for manager removal');
+    } else {
+      console.log('No teams found with the specified manager ID');
+    }
+  }
+
 }
