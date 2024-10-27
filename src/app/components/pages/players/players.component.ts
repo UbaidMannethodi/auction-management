@@ -179,7 +179,7 @@ export class PlayersComponent implements OnInit {
     }
 
     // Save the PDF
-    doc.save('players_by_position.pdf');
+    doc.save('UPL_2024_players_list.pdf');
   }
 
   openAddPlayerDialog(player?:Player): void {
