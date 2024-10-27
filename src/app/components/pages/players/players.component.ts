@@ -11,6 +11,9 @@ import {ConfirmDialogComponent} from "../../commons/confirm-dialog/confirm-dialo
 import {DataUtils} from "../../../utils/data-utils";
 import {FormsModule} from "@angular/forms";
 import {TeamService} from "../../../services/team/team.service";
+import autoTable from "jspdf-autotable";
+import jsPDF from "jspdf";
+import {MatIcon} from "@angular/material/icon";
 
 @Component({
   selector: 'app-players',
@@ -20,7 +23,8 @@ import {TeamService} from "../../../services/team/team.service";
     NgForOf,
     MatButton,
     NgxLoadingModule,
-    FormsModule
+    FormsModule,
+    MatIcon
   ],
   templateUrl: './players.component.html',
   styleUrl: './players.component.scss'
@@ -110,6 +114,72 @@ export class PlayersComponent implements OnInit {
   getPosition(positionID: string): string {
     const positions = DataUtils.playerPositions;
     return positions.find( position => position.id === positionID)?.name
+  }
+
+  generatePDF() {
+    const doc = new jsPDF();
+
+    // Define position order and titles
+    const positionOrder = ['captain', 'goalkeeper', 'defender', 'forward'];
+    const positionTitles: { [key: string]: string } = {
+      captain: 'Captains',
+      goalkeeper: 'Goal keepers',
+      defender: 'Defenders',
+      forward: 'Forwards',
+    };
+
+    // Title for the document (bold)
+    doc.setFont('Helvetica', 'bold'); // Set font to bold
+    doc.text('UPL Players List', 14, 10);
+    doc.setFont('Helvetica', 'normal'); // Reset font back to normal
+    let yPosition = 40; // Initial Y position for adding content
+
+    // Group players by position including captain
+    for (const position of positionOrder) {
+      let playersByPosition = [];
+
+      // Filter players based on position
+      if (position === 'captain') {
+        playersByPosition = this.playerService.players.filter(player => player.isCaptain);
+      } else {
+        playersByPosition = this.playerService.players.filter(player =>  (player.position).toLowerCase() === position.toLowerCase());
+      }
+
+      // Debugging log to check the filtered players
+      console.log(`Position: ${position}`, playersByPosition); // Log the players for this position
+
+      // Skip if no players for this position
+      if (playersByPosition.length === 0) continue;
+
+      // Add a header for each position
+      doc.text(positionTitles[position], 14, yPosition);
+      yPosition += 10; // Space between heading and table
+
+      // Prepare data for each position's players with serial numbers
+      const tableData = playersByPosition.map((player, index) => [
+        (index + 1).toString(), // Serial Number (1-based index)
+        player.name,
+        ''
+      ]);
+
+      // Add table for the position
+      autoTable(doc, {
+        head: [['SI No', 'Name', 'Remark']], // Updated header to include SI No
+        body: tableData,
+        startY: yPosition,
+        theme: 'striped',
+        columnStyles: {
+          0: { cellWidth: 20 }, // Width for SI No column
+          1: { cellWidth: 50 }, // Width for Name column
+          2: { cellWidth: 100 }, // Width for Remark column (larger)
+        },
+      });
+
+      yPosition = doc.lastAutoTable.finalY + 10; // Update Y position for next section
+    }
+
+    // Save the PDF
+    doc.save('players_by_position.pdf');
   }
 
   openAddPlayerDialog(player?:Player): void {

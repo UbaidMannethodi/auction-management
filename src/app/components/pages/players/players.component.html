@@ -28,6 +28,12 @@
       <option value="">All Positions</option>
       <option *ngFor="let position of positions" [value]="position.id">{{ position.name }}</option>
     </select>
+
+    <!-- Download PDF Button -->
+    <button mat-button color="primary" (click)="generatePDF()" class="flex items-center">
+      <mat-icon>download</mat-icon>
+      <span class="ml-2">Download PDF</span>
+    </button>
   </div>
 
   <!-- Players Table/Card List -->
