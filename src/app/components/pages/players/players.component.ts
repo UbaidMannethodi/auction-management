@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {CurrencyPipe, NgForOf} from "@angular/common";
+import {CurrencyPipe, NgForOf, NgIf} from "@angular/common";
 import {MatDialog} from "@angular/material/dialog";
 import {MatButton} from "@angular/material/button";
 import {PlayerFormComponent} from "./player-form/player-form.component";
@@ -24,7 +24,8 @@ import {MatIcon} from "@angular/material/icon";
     MatButton,
     NgxLoadingModule,
     FormsModule,
-    MatIcon
+    MatIcon,
+    NgIf
   ],
   templateUrl: './players.component.html',
   styleUrl: './players.component.scss'

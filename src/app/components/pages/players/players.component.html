@@ -45,6 +45,11 @@
       <!-- Serial number in the top-left corner -->
       <span class="absolute top-2 left-2 text-sm font-bold text-gray-600">{{ player.tokenNo }}</span>
 
+      <!-- Captain Badge -->
+      <span *ngIf="player.isCaptain" class="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+        Captain
+      </span>
+
       <!-- Player image and details -->
       <img [src]="player.image" alt="Player Image" class="w-24 h-24 rounded-full mx-auto mb-4">
       <h3 class="text-lg font-semibold text-center">{{ player.name }}</h3>
