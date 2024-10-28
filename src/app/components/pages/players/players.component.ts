@@ -35,6 +35,7 @@ export class PlayersComponent implements OnInit {
   positions = DataUtils.playerPositions;
   loading = false;
 
+  isCaptainOnly = false;
   searchTerm: string = '';
   selectedPosition: string = '';
 
@@ -65,11 +66,15 @@ export class PlayersComponent implements OnInit {
     }
   }
 
-  get filteredPlayers() {
-    return this.playerService.players.filter(player =>
-      player.name.toLowerCase().includes(this.searchTerm.toLowerCase()) &&
-      (this.selectedPosition ? player.position === this.selectedPosition : true)
-    );
+
+  get filteredPlayers(): Player[] {
+    return this.playerService.players.filter(player => {
+      const matchesSearch = player.name.toLowerCase().includes(this.searchTerm.toLowerCase());
+      const matchesPosition = !this.selectedPosition || player.position === this.selectedPosition;
+      const matchesCaptain = !this.isCaptainOnly || player.isCaptain;
+
+      return matchesSearch && matchesPosition && matchesCaptain;
+    });
   }
 
   editPlayer(player: Player): void {

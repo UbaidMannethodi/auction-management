@@ -29,6 +29,12 @@
       <option *ngFor="let position of positions" [value]="position.id">{{ position.name }}</option>
     </select>
 
+    <!-- Captain Filter Checkbox -->
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" [(ngModel)]="isCaptainOnly" class="form-checkbox text-indigo-600">
+      <span>Show Captains Only</span>
+    </label>
+
     <!-- Download PDF Button -->
     <button mat-button color="primary" (click)="generatePDF()" class="flex items-center">
       <mat-icon>download</mat-icon>
