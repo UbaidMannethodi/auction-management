@@ -48,6 +48,7 @@ export class TokenListComponent implements OnInit {
       this.loading.player = true;
       if (!this.playerService?.players?.length || forceFetch) {
         this.playerService.players = await this.playerService.getPlayers();
+        this.playerService.players = this.playerService.players.sort((a, b) => a.tokenNo - b.tokenNo);
       }
     } catch (error: any) {
       this.loading.player = false;
@@ -73,10 +74,10 @@ export class TokenListComponent implements OnInit {
 
   openPlayerOverviewDialog(player?:Player): void {
     const dialogRef = this.dialog.open(PlayerOverviewComponent, {
-      width: '95vw',  // Full viewport width
-      height: '95vh', // Full viewport height
-      maxWidth: '95vw',
-      maxHeight: '95vh',
+      width: '100vw',
+      height: '100vh',
+      maxWidth: '100vw',
+      maxHeight: '100vh',
       data: {player, teams: this.teamService.teams}
     });
 

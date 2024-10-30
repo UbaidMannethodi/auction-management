@@ -59,7 +59,7 @@
       <!-- Player image and details -->
       <img [src]="player.image" alt="Player Image" class="w-24 h-24 rounded-full mx-auto mb-4">
       <h3 class="text-lg font-semibold text-center">{{ player.name }}</h3>
-      <p class="text-gray-500 text-center">{{ getPosition(player.position) }}</p>
+      <p class="text-gray-500 text-center">{{ dataUtils?.getPosition(player.position) }}</p>
       <p class="text-gray-700 text-center mt-1">₹{{ player.price || 0 }}</p>
 
       <!-- Edit/Delete buttons -->

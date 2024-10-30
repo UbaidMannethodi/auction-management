@@ -2,7 +2,7 @@ import {Component, Inject} from '@angular/core';
 import {MatFormField} from "@angular/material/form-field";
 import {MatOption} from "@angular/material/core";
 import {MatSelect} from "@angular/material/select";
-import {NgForOf} from "@angular/common";
+import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormsModule} from "@angular/forms";
 import {MatInput} from "@angular/material/input";
@@ -12,6 +12,7 @@ import {Team} from "../../../../model/team";
 import {PlayerService} from "../../../../services/players/player.service";
 import {TeamService} from "../../../../services/team/team.service";
 import {ToastrService} from "ngx-toastr";
+import {DataUtils} from "../../../../utils/data-utils";
 
 @Component({
   selector: 'app-player-overview',
@@ -23,7 +24,9 @@ import {ToastrService} from "ngx-toastr";
     NgForOf,
     FormsModule,
     MatInput,
-    NgxLoadingModule
+    NgxLoadingModule,
+    NgIf,
+    NgClass
   ],
   templateUrl: './player-overview.component.html',
   styleUrl: './player-overview.component.scss'
@@ -32,6 +35,9 @@ export class PlayerOverviewComponent {
 
   isImageLoading: boolean = false;
   loading = false;
+  showDetails = false;
+
+  dataUtils = DataUtils;
 
   amount: number;
   selectedTeam: Team;
@@ -93,6 +99,10 @@ export class PlayerOverviewComponent {
 
     }
 
+  }
+
+  closeDialog() {
+    this.dialogRef.close();
   }
 
   onImageLoad() {

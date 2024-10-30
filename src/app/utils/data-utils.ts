@@ -6,5 +6,10 @@ export class DataUtils {
     {id: 'defender', name: 'Defender'},
   ]
 
+  public static getPosition(positionID: string): string {
+    const positions = DataUtils.playerPositions;
+    return positions.find( position => position.id === positionID)?.name;
+  }
+
 
 }

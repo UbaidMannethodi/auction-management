@@ -14,6 +14,8 @@ import {MatIcon} from "@angular/material/icon";
 import {NgxLoadingModule} from "ngx-loading";
 import {TeamOverviewComponent} from "./team-overview/team-overview.component";
 import {TeamStatusComponent} from "./team-status/team-status.component";
+import {Player} from "../../../model/player";
+import {DataUtils} from "../../../utils/data-utils";
 
 
 @Component({
@@ -39,6 +41,7 @@ import {TeamStatusComponent} from "./team-status/team-status.component";
 export class TeamsComponent implements OnInit {
 
   loading = false;
+  dataUtils = DataUtils;
 
   constructor(private dialog: MatDialog,
               public teamService: TeamService,
@@ -96,6 +99,16 @@ export class TeamsComponent implements OnInit {
     }
   }
 
+  getPlayersWithPlaceholders(players: Player[]): any[] {
+    const defaultPlayers = Array.from({ length: 7 - players.length }, (_, i) => ({
+      image: '/images/icons/avatar.png',
+      name: `Player ${players.length + i + 1}`,
+      position: ''
+    }));
+
+    return [...players, ...defaultPlayers];
+  }
+
   openAddTeamDialog(team?: Team): void {
     const editMode = !!team
     const dialogRef = this.dialog.open(TeamFormComponent, {
@@ -111,11 +124,12 @@ export class TeamsComponent implements OnInit {
   }
 
   openTeamOverviewDialog(team:Team): void {
+    const tam = {team: {...team, ...{players: this.getPlayersWithPlaceholders(team.players)}}}
     const dialogRef = this.dialog.open(TeamOverviewComponent, {
-      width: '100vw',
-      height: 'auto',
-      panelClass: 'full-screen-dialog',
-      data: {team}
+      minWidth: '95vw',
+      minHeight: '95vh',
+      panelClass: 'team-lineup-dialog',
+      data: {team: {...team, ...{players: this.getPlayersWithPlaceholders(team.players)}}}
     });
   }
 

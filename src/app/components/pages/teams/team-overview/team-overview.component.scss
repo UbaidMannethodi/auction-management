@@ -1,0 +1,23 @@
+:host {
+  display: block;
+  width: 95vw;
+  height: 95vh;
+  overflow-y: auto;
+}
+
+img {
+  border-width: 2px;
+}
+
+.border {
+  border-style: solid;
+}
+
+p, h2, h3 {
+  margin: 0;
+}
+
+.manager-container {
+  text-align: center;
+  border-width: 2px;
+}

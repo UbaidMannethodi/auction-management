@@ -32,6 +32,7 @@ import {MatIcon} from "@angular/material/icon";
 })
 export class PlayersComponent implements OnInit {
 
+  dataUtils = DataUtils;
   positions = DataUtils.playerPositions;
   loading = false;
 
@@ -117,11 +118,6 @@ export class PlayersComponent implements OnInit {
     this.teamService.teams = await this.teamService.getTeam();
   }
 
-  getPosition(positionID: string): string {
-    const positions = DataUtils.playerPositions;
-    return positions.find( position => position.id === positionID)?.name
-  }
-
   generatePDF() {
     const doc = new jsPDF();
 
@@ -201,6 +197,4 @@ export class PlayersComponent implements OnInit {
       }
     });
   }
-
-
 }

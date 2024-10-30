@@ -4,3 +4,20 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+//.cdk-global-overlay-wrapper {
+//  justify-content: center !important;
+//}
+
+
+.team-lineup-dialog .mat-dialog-container {
+  padding: 0;
+  max-width: 95vw;
+  max-height: 95vh;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.mat-dialog-container {
+  padding: 0 !important; /* Remove default padding */
+}
