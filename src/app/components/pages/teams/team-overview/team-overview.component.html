@@ -1,43 +1,89 @@
 <div
-  class="relative bg-cover bg-center min-h-screen flex flex-col items-center p-4"
+  class="relative bg-cover bg-center h-screen flex flex-col items-center p-2 md:p-4 lg:p-6 overflow-hidden"
   style="background-image: url('/images/icons/bg/stadium_1.jpg');"
 >
-  <!-- Team Name Box -->
-  <div class="bg-black bg-opacity-70 rounded-lg p-6 mt-4 shadow-lg">
-    <h1 class="text-white text-4xl md:text-5xl font-bold uppercase tracking-widest text-center">
+  <!-- Background Gradient Overlay -->
+  <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+
+  <!-- Team Name Box with enhanced styles -->
+  <div
+    class="relative bg-black bg-opacity-80 rounded-lg p-6 mt-6 flex-shrink-0 shadow-2xl max-w-screen-lg w-full md:w-4/5 lg:w-3/5 text-center z-10"
+  >
+    <h1 class="text-white text-5xl md:text-6xl lg:text-7xl font-extrabold uppercase tracking-wider drop-shadow-md">
       {{ data?.team?.name }}
     </h1>
   </div>
 
-  <!-- Manager Section -->
-  <div class="flex justify-center mt-8">
-    <div class="relative bg-black text-white rounded-lg p-6 border-4 border-white shadow-lg">
+  <!-- Manager Section with flexible scaling -->
+  <div class="flex justify-center mt-3 lg:mt-4 flex-shrink-0 z-10">
+    <div
+      [ngStyle]="{'border-color': data?.team.primaryColor}"
+      class="relative bg-black bg-opacity-80 text-white rounded-xl p-4 md:p-6 lg:p-7 border-4 shadow-xl w-64 md:w-72 lg:w-80 text-center">
       <img
-        [src]="data?.team?.manager?.image || '/assets/images/default-avatar.jpg'"
+        [src]="data?.team?.manager?.image || '/images/icons/player_avatar_white.jpeg'"
         alt="Manager"
-        class="w-40 h-50 object-cover rounded-lg border-2 border-white mb-4 mx-auto"
+        class="w-24 h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 object-cover rounded-full border-2 border-white mb-3 mx-auto shadow-lg"
       />
-      <p class="text-center text-xl font-semibold">{{ data?.team?.manager?.name }}</p>
-      <p class="text-center text-sm">Manager</p>
+      <p class="text-lg md:text-xl font-semibold">{{ data?.team?.manager?.name }}</p>
+      <p class="text-sm md:text-lg opacity-80">Manager</p>
     </div>
   </div>
 
-  <!-- Player Grid -->
-  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-12 max-w-6xl mx-auto justify-items-center">
-    <div
-      *ngFor="let player of getPlayersWithPlaceholders(data?.team?.players)"
-      class="bg-black text-white rounded-lg p-4 border-2 border-green-600 text-center shadow-lg transition-transform transform hover:scale-105"
-    >
-      <img
-        [src]="player.image || '/assets/images/default-avatar.jpg'"
-        alt="{{ player.name }}"
-        class="w-32 h-32 rounded-lg mx-auto mb-4"
-      />
-      <p class="text-lg font-semibold">{{ player?.name }}</p>
-      <p class="text-md text-gray-300">{{ player?.position | titlecase }}</p>
-      <div class="bg-green-600 text-white rounded-full px-4 py-1 inline-block mt-2 text-sm font-bold">
-        ₹{{ player?.price || 0 }}
+  <!-- Player Grid with custom row layout -->
+  <div class="flex-grow w-full max-w-screen-lg px-4 md:px-6 mt-4 lg:mt-6 overflow-hidden z-10">
+    <!-- First Row: 4 Players -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
+      <div
+        *ngFor="let player of data?.team?.players | slice:0:4"
+        [ngStyle]="{'border-color': data?.team.primaryColor}"
+        style="min-width: 220px !important;"
+        class="bg-black bg-opacity-75 text-white rounded-lg p-3 md:p-4 lg:p-5 border-2 text-center shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl"
+      >
+        <img
+          [src]="player.image || '/images/icons/player_avatar_white.jpeg'"
+          alt="{{ player.name }}"
+          class="w-24 h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 object-cover rounded-full mx-auto mb-2 shadow-md border-2 border-gray-700"
+        />
+        <p class="text-sm md:text-md lg:text-lg font-semibold tracking-wide">{{ player?.name }}</p>
+        <p class="text-xs md:text-sm lg:text-md text-gray-300">{{ player?.position | titlecase }}</p>
+
+        <!-- Price Tag -->
+        <div class="bg-primary-color text-secondary-color rounded-full px-2 md:px-3 py-1 mt-1 text-xs md:text-sm font-bold shadow-md"
+             [ngStyle]="{'background-color': data?.team.primaryColor, 'color': data?.team.secondaryColor}"
+        >
+          ₹{{ player?.price || 0 }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Second Row: 3 Players, centered -->
+    <div class="flex justify-center gap-3 md:gap-4 lg:gap-6 mt-3 md:mt-4">
+      <div
+        *ngFor="let player of data?.team?.players | slice:4:7"
+        [ngStyle]="{'border-color': data?.team.primaryColor}"
+        style="min-width: 220px !important;"
+        class="bg-black bg-opacity-75 text-white rounded-lg p-3 md:p-4 lg:p-5 border-2 text-center shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl"
+      >
+        <img
+          [src]="player.image || '/images/icons/player_avatar_white.jpeg'"
+          alt="{{ player.name }}"
+          class="w-24 h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 object-cover rounded-full mx-auto mb-2 shadow-md border-2 border-gray-700"
+        />
+        <p class="text-sm md:text-md lg:text-lg font-semibold tracking-wide">{{ player?.name }}</p>
+        <p class="text-xs md:text-sm lg:text-md text-gray-300">{{ player?.position | titlecase }}</p>
+
+        <!-- Price Tag -->
+        <div class="bg-primary-color text-secondary-color rounded-full px-2 md:px-3 py-1 mt-1 text-xs md:text-sm font-bold shadow-md"
+             [ngStyle]="{'background-color': data?.team.primaryColor, 'color': data?.team.secondaryColor}"
+        >
+          ₹{{ player?.price || 0 }}
+        </div>
       </div>
     </div>
   </div>
+
+  <button (click)="this.openTeamStatusDialog()" class="absolute right-4 bottom-4 text-white text-xl md:text-2xl focus:outline-none">
+    <span class="transform transition-transform">▼</span>
+  </button>
+
 </div>

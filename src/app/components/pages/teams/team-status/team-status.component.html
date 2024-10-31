@@ -12,8 +12,8 @@
   <div>
     <h2 class="text-xl lg:text-3xl font-semibold text-gray-800">
       Total Players:
-      <span *ngIf="data.team?.players?.length; else noPlayers">
-        {{ data.team?.players?.length }}
+      <span *ngIf="playersCount; else noPlayers">
+        {{ playersCount }}
       </span>
       <ng-template #noPlayers>
         <span class="text-red-500">No Players Selected</span>
@@ -27,7 +27,7 @@
       <h3 class="text-lg lg:text-2xl font-semibold text-gray-700 capitalize mt-6">{{ position }}</h3>
       <div class="overflow-x-auto mt-3">
         <table class="min-w-full border border-gray-300 rounded-lg overflow-hidden">
-          <thead>
+          <thead *ngIf="data.teamStatus?.selectedPositions[position]?.length">
           <tr class="bg-gray-200 text-gray-700 uppercase text-base lg:text-lg leading-normal">
             <th class="py-4 px-6 text-left">Photo</th>
             <th class="py-4 px-6 text-left">Name</th>
@@ -37,6 +37,7 @@
           <tbody class="text-gray-600 text-base lg:text-lg font-light">
           <tr *ngFor="let player of data.teamStatus?.selectedPositions[position]"
               class="border-b border-gray-300 hover:bg-gray-100">
+            <ng-container *ngIf="player?.id">
             <td class="py-3 px-6 text-left font-bold">
               <img [src]="player.image" alt="{{ player.name }}" class="w-12 h-12 lg:w-14 lg:h-14 rounded-full" />
             </td>
@@ -44,6 +45,7 @@
             <td class="py-3 px-6 text-left font-bold">
               {{ player.price !== null ? '₹' + player.price : 'N/A' }}
             </td>
+            </ng-container>
           </tr>
           </tbody>
         </table>

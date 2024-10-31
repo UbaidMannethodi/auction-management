@@ -101,7 +101,7 @@ export class TeamsComponent implements OnInit {
 
   getPlayersWithPlaceholders(players: Player[]): any[] {
     const defaultPlayers = Array.from({ length: 7 - players.length }, (_, i) => ({
-      image: '/images/icons/avatar.png',
+      image: '/images/icons/player_avatar_white.jpeg',
       name: `Player ${players.length + i + 1}`,
       position: ''
     }));
@@ -124,7 +124,6 @@ export class TeamsComponent implements OnInit {
   }
 
   openTeamOverviewDialog(team:Team): void {
-    const tam = {team: {...team, ...{players: this.getPlayersWithPlaceholders(team.players)}}}
     const dialogRef = this.dialog.open(TeamOverviewComponent, {
       minWidth: '95vw',
       minHeight: '95vh',

@@ -7,8 +7,8 @@ import {PlayerOverviewComponent} from "../players/player-overview/player-overvie
 import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {NgxLoadingModule} from "ngx-loading";
 import {TeamService} from "../../../services/team/team.service";
-import {Team} from "../../../model/team";
 import {environment} from "../../../../environments/environment";
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-token-list',
@@ -18,7 +18,8 @@ import {environment} from "../../../../environments/environment";
     NgClass,
     NgIf,
     NgStyle,
-    NgxLoadingModule
+    NgxLoadingModule,
+    RouterLink
   ],
   templateUrl: './token-list.component.html',
   styleUrl: './token-list.component.scss'

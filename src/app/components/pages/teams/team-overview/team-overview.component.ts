@@ -1,9 +1,9 @@
 import {Component, Inject} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
 import {Team} from "../../../../model/team";
-import {CurrencyPipe, NgForOf, NgIf, NgStyle, TitleCasePipe} from "@angular/common";
-import {PlayerService} from "../../../../services/players/player.service";
-import {Player} from "../../../../model/player";
+import {CurrencyPipe, NgForOf, NgIf, NgStyle, SlicePipe, TitleCasePipe} from "@angular/common";
+import {TeamStatusComponent} from "../team-status/team-status.component";
+import {TeamService} from "../../../../services/team/team.service";
 
 @Component({
   selector: 'app-team-overview',
@@ -13,7 +13,8 @@ import {Player} from "../../../../model/player";
     NgIf,
     NgStyle,
     TitleCasePipe,
-    CurrencyPipe
+    CurrencyPipe,
+    SlicePipe,
   ],
   templateUrl: './team-overview.component.html',
   styleUrl: './team-overview.component.scss'
@@ -22,18 +23,18 @@ export class TeamOverviewComponent {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: {team: Team},
-    private dialogRef: MatDialogRef<TeamOverviewComponent>,
-    public playerService: PlayerService
-  ) {}
+    private teamService: TeamService,
+    private dialogRef: MatDialog) {}
 
-  getPlayersWithPlaceholders(players: Player[]): any[] {
-    const defaultPlayers = Array.from({ length: 7 - players.length }, (_, i) => ({
-      image: '/images/icons/avatar.png',
-      name: `Player ${players.length + i + 1}`,
-      position: ''
-    }));
-
-    return [...players, ...defaultPlayers];
+  openTeamStatusDialog(): void {
+    const dialogRef = this.dialogRef.open(TeamStatusComponent, {
+      minWidth: '95vw',
+      minHeight: '95vh',
+      data: {
+        teamStatus: this.teamService.getTeamStatus(this.data?.team),
+        team: this.data?.team
+      }
+    });
   }
 
 }
