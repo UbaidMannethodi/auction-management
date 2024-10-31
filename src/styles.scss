@@ -5,17 +5,20 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-//.cdk-global-overlay-wrapper {
-//  justify-content: center !important;
-//}
-
-
 .team-lineup-dialog .mat-dialog-container {
   padding: 0;
   max-width: 95vw;
   max-height: 95vh;
   overflow: hidden;
   border-radius: 8px;
+}
+
+.grayscale-50 {
+  filter: grayscale(50%);
+}
+
+.grayscale-30 {
+  filter: grayscale(30%);
 }
 
 .mat-dialog-container {

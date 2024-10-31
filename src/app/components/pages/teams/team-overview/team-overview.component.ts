@@ -27,9 +27,9 @@ export class TeamOverviewComponent {
     private dialogRef: MatDialog) {}
 
   openTeamStatusDialog(): void {
-    const dialogRef = this.dialogRef.open(TeamStatusComponent, {
-      minWidth: '95vw',
-      minHeight: '95vh',
+    this.dialogRef.open(TeamStatusComponent, {
+      minWidth: '70vw',
+      minHeight: '85vh',
       data: {
         teamStatus: this.teamService.getTeamStatus(this.data?.team),
         team: this.data?.team

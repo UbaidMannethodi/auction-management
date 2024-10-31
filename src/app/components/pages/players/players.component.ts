@@ -147,9 +147,6 @@ export class PlayersComponent implements OnInit {
         playersByPosition = this.playerService.players.filter(player =>  (player.position).toLowerCase() === position.toLowerCase());
       }
 
-      // Debugging log to check the filtered players
-      console.log(`Position: ${position}`, playersByPosition); // Log the players for this position
-
       // Skip if no players for this position
       if (playersByPosition.length === 0) continue;
 

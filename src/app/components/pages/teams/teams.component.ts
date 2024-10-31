@@ -41,7 +41,6 @@ import {DataUtils} from "../../../utils/data-utils";
 export class TeamsComponent implements OnInit {
 
   loading = false;
-  dataUtils = DataUtils;
 
   constructor(private dialog: MatDialog,
               public teamService: TeamService,
@@ -125,18 +124,17 @@ export class TeamsComponent implements OnInit {
 
   openTeamOverviewDialog(team:Team): void {
     const dialogRef = this.dialog.open(TeamOverviewComponent, {
-      minWidth: '95vw',
-      minHeight: '95vh',
+      minWidth: '98vw',
+      minHeight: '98vh',
       panelClass: 'team-lineup-dialog',
       data: {team: {...team, ...{players: this.getPlayersWithPlaceholders(team.players)}}}
     });
   }
 
   openTeamStatusDialog(team:Team): void {
-    console.log('tt', this.teamService.getTeamStatus(team))
-    const dialogRef = this.dialog.open(TeamStatusComponent, {
-      minWidth: '95vw',
-      minHeight: '95vh',
+    this.dialog.open(TeamStatusComponent, {
+      minWidth: '70vw',
+      minHeight: '85vh',
       data: {
         teamStatus: this.teamService.getTeamStatus(team),
         team: team
