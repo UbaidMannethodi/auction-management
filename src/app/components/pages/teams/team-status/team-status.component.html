@@ -1,16 +1,53 @@
-<div class="bg-white bg-opacity-90 rounded-lg p-6 shadow-lg">
-  <h2 class="text-3xl font-bold text-center mb-6" [style.color]="data.team.color">{{ data.team.name }}</h2>
-  <div class="text-center mb-4">
-    <p class="text-lg font-semibold text-gray-800">Available Balance: <span class="text-blue-600 font-bold">{{ data.availableBalance }}</span></p>
-    <p class="text-lg font-semibold text-gray-800">Selected Positions: <span class="text-blue-600 font-bold">{{ consolidatePositions(data.selectedPositions) }}</span></p>
-    <p class="text-lg font-semibold text-gray-800">Positions to be Selected: <span class="text-blue-600 font-bold">{{ consolidatePositions(data.positionsToBeSelected) }}</span></p>
+<div class="p-6 lg:p-10">
+  <!-- Display Allocated and Available Amounts and Total Player Count -->
+  <div class="mb-8 flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0 lg:space-x-8">
+    <h2 class="text-xl lg:text-3xl text-red-500 font-semibold">
+      Available Amount: ₹{{ data.teamStatus?.availableAmount }}
+    </h2>
+    <h2 class="text-xl lg:text-3xl font-semibold text-green-500">
+      Allocated Amount: ₹{{ data.teamStatus?.allocatedAmount }}
+    </h2>
   </div>
 
-  <div class="grid grid-cols-3 gap-6">
-    <div *ngFor="let player of data.players" class="flex flex-col items-center border border-gray-300 p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
-      <img [src]="player.image" alt="Player" class="w-32 h-32 border-4 border-blue-600 rounded-full mb-2">
-      <p class="text-lg font-semibold text-gray-800">{{ player.name }}</p>
-      <p class="text-gray-600">Price: <span class="font-bold text-blue-600">{{ player.price }}</span></p>
+  <div>
+    <h2 class="text-xl lg:text-3xl font-semibold text-gray-800">
+      Total Players:
+      <span *ngIf="data.team?.players?.length; else noPlayers">
+        {{ data.team?.players?.length }}
+      </span>
+      <ng-template #noPlayers>
+        <span class="text-red-500">No Players Selected</span>
+      </ng-template>
+    </h2>
+  </div>
+
+  <!-- Players Section -->
+  <div class="overflow-y-auto max-h-[500px] mt-6">
+    <div *ngFor="let position of objectKeys(data.teamStatus?.selectedPositions)">
+      <h3 class="text-lg lg:text-2xl font-semibold text-gray-700 capitalize mt-6">{{ position }}</h3>
+      <div class="overflow-x-auto mt-3">
+        <table class="min-w-full border border-gray-300 rounded-lg overflow-hidden">
+          <thead>
+          <tr class="bg-gray-200 text-gray-700 uppercase text-base lg:text-lg leading-normal">
+            <th class="py-4 px-6 text-left">Photo</th>
+            <th class="py-4 px-6 text-left">Name</th>
+            <th class="py-4 px-6 text-left">Bid Price</th>
+          </tr>
+          </thead>
+          <tbody class="text-gray-600 text-base lg:text-lg font-light">
+          <tr *ngFor="let player of data.teamStatus?.selectedPositions[position]"
+              class="border-b border-gray-300 hover:bg-gray-100">
+            <td class="py-3 px-6 text-left font-bold">
+              <img [src]="player.image" alt="{{ player.name }}" class="w-12 h-12 lg:w-14 lg:h-14 rounded-full" />
+            </td>
+            <td class="py-3 px-6 text-left font-bold">{{ player.name }}</td>
+            <td class="py-3 px-6 text-left font-bold">
+              {{ player.price !== null ? '₹' + player.price : 'N/A' }}
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>

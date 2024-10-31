@@ -1,28 +1,25 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
-import {NgForOf} from "@angular/common";
+import {CurrencyPipe, NgForOf, NgIf, TitleCasePipe} from "@angular/common";
+import {Team, TeamStatus} from "../../../../model/team";
 
 @Component({
   selector: 'app-team-status',
   standalone: true,
   imports: [
-    NgForOf
+    NgForOf,
+    TitleCasePipe,
+    CurrencyPipe,
+    NgIf
   ],
   templateUrl: './team-status.component.html',
   styleUrl: './team-status.component.scss'
 })
 export class TeamStatusComponent {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
+  objectKeys = Object.keys;
 
-  consolidatePositions(positions: string[]): string {
-    const counts = positions.reduce((acc: any, pos) => {
-      acc[pos] = (acc[pos] || 0) + 1;
-      return acc;
-    }, {});
+  constructor(@Inject(MAT_DIALOG_DATA) public data: {teamStatus: TeamStatus, team: Team}) {}
 
-    return Object.entries(counts)
-      .map(([pos, count]) => `${pos} (${count})`)
-      .join(', ');
-  }
+
 }

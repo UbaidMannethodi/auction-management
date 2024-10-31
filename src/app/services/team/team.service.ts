@@ -49,13 +49,13 @@ export class TeamService {
 
       const selectedPositions = Object.keys(groupedPlayersByPosition || {});
       const positions = DataUtils.playerPositions.map( position => position.id);
-      const positionToSelect: any = positions.filter(item => !selectedPositions.includes(item));
+      const openPositions: any = positions.filter(item => !selectedPositions.includes(item));
 
       const teamStatus: any = {};
-      teamStatus.availableAmount = environment.team.availableAmount;
-      teamStatus.balanceAmount = environment.team.availableAmount - totalPrice;
+      teamStatus.allocatedAmount = environment.team.allocatedAmount;
+      teamStatus.availableAmount = environment.team.allocatedAmount - totalPrice;
       teamStatus.selectedPositions = groupedPlayersByPosition;
-      teamStatus.PositionToSelect = positionToSelect;
+      teamStatus.openPositions = openPositions;
       return teamStatus;
     } else {
       return null;

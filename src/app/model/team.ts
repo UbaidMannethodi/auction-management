@@ -11,9 +11,9 @@ export interface Team {
 }
 
 export interface TeamStatus {
+  allocatedAmount: number;
   availableAmount: number;
-  balanceAmount: number;
-  selectedPositions: {[key: string]: Player[]};
-  PositionToSelect: {[key: string]: Player[]};
+  selectedPositions: any;
+  openPositions: string[];
 }
 

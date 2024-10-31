@@ -134,15 +134,13 @@ export class TeamsComponent implements OnInit {
   }
 
   openTeamStatusDialog(team:Team): void {
+    console.log('tt', this.teamService.getTeamStatus(team))
     const dialogRef = this.dialog.open(TeamStatusComponent, {
-      width: '100vw',
-      height: 'auto',
+      minWidth: '95vw',
+      minHeight: '95vh',
       data: {
-        team: team,
-        availableBalance: 22,
-        selectedPositions: ['3432', '342'],
-        positionsToBeSelected: ['3432', '342'],
-        players: team.players
+        teamStatus: this.teamService.getTeamStatus(team),
+        team: team
       }
     });
   }

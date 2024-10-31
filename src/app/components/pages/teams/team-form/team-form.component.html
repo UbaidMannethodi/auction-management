@@ -1,10 +1,6 @@
-<ngx-loading
-  [show]="loading.managers || loading?.players || loading?.posting"
-  [config]="{ backdropBorderRadius: '3px' }"
-></ngx-loading>
-
-
-<h2 mat-dialog-title class="text-center text-2xl font-semibold">{{data.editMode ? 'Modify Team' : 'Add New Team'}}</h2>
+<h2 mat-dialog-title class="text-center text-2xl font-semibold">
+  {{data.editMode ? 'Modify Team' : 'Add New Team'}}
+</h2>
 <form [formGroup]="teamForm">
   <mat-dialog-content class="space-y-6">
     <mat-form-field class="w-full" appearance="fill">
@@ -46,6 +42,8 @@
 
   <mat-dialog-actions align="end" class="space-x-4">
     <button mat-button color="warn" (click)="onCancel()">Cancel</button>
-    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="teamForm.invalid">{{data.editMode ? 'Modify Team' : 'Add Team'}}</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="teamForm.invalid">
+      {{data.editMode ? 'Modify Team' : 'Add Team'}}
+    </button>
   </mat-dialog-actions>
 </form>

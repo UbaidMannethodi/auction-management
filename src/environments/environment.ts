@@ -10,7 +10,7 @@ export const environment = {
   },
 
   team: {
-    availableAmount: 700,
+    allocatedAmount: 700,
     totalPlayersCount: 6
   },
 
