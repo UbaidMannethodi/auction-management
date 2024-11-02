@@ -22,6 +22,7 @@
     <mat-form-field class="w-full" appearance="fill">
       <mat-label><mat-icon>work</mat-icon> Manager</mat-label>
       <mat-select formControlName="manager" placeholder="Select manager">
+        <mat-option *ngIf="teamForm.get('manager')?.value" (click)="teamForm.get('manager')?.reset()">Clear selection</mat-option>
         <mat-option *ngFor="let manager of managersService.managers" [value]="manager.id">
           <img [src]="manager.image" alt="{{manager.name}}" class="inline-block w-6 h-6 mr-2" />
           {{ manager.name }}
