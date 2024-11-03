@@ -16,6 +16,8 @@ import {doc} from "firebase/firestore";
 import {Team, TeamStatus} from "../../model/team";
 import {environment} from "../../../environments/environment";
 import {DataUtils} from "../../utils/data-utils";
+import {ManagersService} from "../managers/managers.service";
+import {PlayerService} from "../players/player.service";
 
 
 @Injectable({
@@ -28,7 +30,9 @@ export class TeamService {
   teamsCollection: CollectionReference;
   teams: Team[] = [];
 
-  constructor(private firestore: Firestore) {
+  constructor(private firestore: Firestore,
+              private managerService: ManagersService,
+              private playerService: PlayerService,) {
     this.teamsCollection = collection(this.firestore, this.TABLE_TEAMS);
   }
 
@@ -80,51 +84,68 @@ export class TeamService {
     await setDoc(newDocRef, team);
   }
 
-  async getTeamBasicDetails(): Promise<Team[]> {
+  // async getTeam(): Promise<Team[]> {
+  //   const snapshot = await getDocs(this.teamsCollection);
+  //   return snapshot.docs.map(doc => doc.data()) as Team[];
+  // }
+
+  async getTeam(): Promise<Team[]> {
     const snapshot = await getDocs(this.teamsCollection);
-    return snapshot.docs.map(doc => doc.data()) as Team[];
+    const teams =  snapshot.docs.map(doc => doc.data()) as Team[];
+
+    const managers = await this.managerService.getManagers();
+    const players = await this.playerService.getPlayers();
+
+    const managersLists = this.arrayToObjectById(managers);
+    const playersLists = this.arrayToObjectById(players);
+
+    return teams.map(team => ({
+      ...team,
+      manager: managersLists[team.manager] || null,
+      players: (team.players || []).map(playerId => playersLists[playerId] || null).filter(Boolean)
+    }));
   }
 
   // Method to fetch all teams with their managers and players in a single batch
-  async getTeam(): Promise<any[]> {
-    const teamsCollection = collection(this.firestore, 'teams');
-
-    // Fetch all teams
-    const teamSnapshots = await getDocs(teamsCollection);
-    const teams = teamSnapshots.docs.map(doc => doc.data()) as Team[];
-    const managerIds = teams.map(team => team.manager) || [];
-    const playerIds = teams.reduce((ids, team) => ids.concat(team.players), [] as string[]) || [];
-    // Batch fetch all managers
-    let managers: any;
-    if (managerIds?.length) {
-      const managersCollection = collection(this.firestore, 'managers');
-      const managerQuery = query(managersCollection, where('id', 'in', managerIds));
-      const managerSnapshots = await getDocs(managerQuery);
-      managers = managerSnapshots.docs.reduce((acc, doc) => {
-        acc[doc.id] = doc.data();
-        return acc;
-      }, {} as Record<string, any>);
-    }
-
-    // Batch fetch all players
-    let players: any;
-    if (playerIds?.length) {
-      const playersCollection = collection(this.firestore, 'players');
-      const playerQuery = query(playersCollection, where('id', 'in', playerIds));
-      const playerSnapshots = await getDocs(playerQuery);
-      players = playerSnapshots.docs.reduce((acc, doc) => {
-        acc[doc.id] = doc.data();
-        return acc;
-      }, {} as Record<string, any>);
-    }
-
-    // Map team details to include manager and players
-    return teams.map(team => ({
-      ...team,
-      manager: managers[team.manager] || null,
-      players: (team.players || []).map(playerId => players[playerId] || null).filter(Boolean)
-    }));
-  }
+  // async getTeam(): Promise<any[]> {
+  //   const teamsCollection = collection(this.firestore, 'teams');
+  //
+  //   // Fetch all teams
+  //   const teamSnapshots = await getDocs(teamsCollection);
+  //   const teams = teamSnapshots.docs.map(doc => doc.data()) as Team[];
+  //   const managerIds = teams.map(team => team.manager) || [];
+  //   const playerIds = teams.reduce((ids, team) => ids.concat(team.players), [] as string[]) || [];
+  //   // Batch fetch all managers
+  //   let managers: any;
+  //   if (managerIds?.length) {
+  //     const managersCollection = collection(this.firestore, 'managers');
+  //     const managerQuery = query(managersCollection, where('id', 'in', managerIds));
+  //     const managerSnapshots = await getDocs(managerQuery);
+  //     managers = managerSnapshots.docs.reduce((acc, doc) => {
+  //       acc[doc.id] = doc.data();
+  //       return acc;
+  //     }, {} as Record<string, any>);
+  //   }
+  //
+  //   // Batch fetch all players
+  //   let players: any;
+  //   if (playerIds?.length) {
+  //     const playersCollection = collection(this.firestore, 'players');
+  //     const playerQuery = query(playersCollection, where('id', 'in', playerIds));
+  //     const playerSnapshots = await getDocs(playerQuery);
+  //     players = playerSnapshots.docs.reduce((acc, doc) => {
+  //       acc[doc.id] = doc.data();
+  //       return acc;
+  //     }, {} as Record<string, any>);
+  //   }
+  //
+  //   // Map team details to include manager and players
+  //   return teams.map(team => ({
+  //     ...team,
+  //     manager: managers[team.manager] || null,
+  //     players: (team.players || []).map(playerId => players[playerId] || null).filter(Boolean)
+  //   }));
+  // }
 
 
   async editTeam(teamID: string, updatedTeam: Partial<Team>) {
@@ -223,6 +244,13 @@ export class TeamService {
     } else {
       console.log('No teams found with the specified manager ID');
     }
+  }
+
+  arrayToObjectById(array: any[]): Record<string, Omit<any, 'id'>> {
+    return array.reduce((acc, item) => {
+      acc[item.id] = item;
+      return acc;
+    }, {} as Record<string, any>);
   }
 
 }
