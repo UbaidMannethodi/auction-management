@@ -16,7 +16,7 @@ export const environment = {
 
   cred: {
     username: 'universal',
-    password: 'universal@56',
+    password: 'universal@55',
     token: 'yturhgndkleitygnf'
   }
 };
