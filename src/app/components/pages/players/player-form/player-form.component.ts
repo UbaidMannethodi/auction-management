@@ -7,7 +7,7 @@ import {
   MatDialogTitle
 } from "@angular/material/dialog";
 import {MatButton} from "@angular/material/button";
-import {MatError, MatFormField, MatLabel} from "@angular/material/form-field";
+import {MatError, MatFormField, MatHint, MatLabel} from "@angular/material/form-field";
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatInput} from "@angular/material/input";
 import {NgForOf, NgIf} from "@angular/common";
@@ -31,6 +31,7 @@ import {MatCheckbox} from "@angular/material/checkbox";
     MatFormField,
     ReactiveFormsModule,
     MatInput,
+    MatHint,
     MatLabel,
     MatDialogContent,
     NgIf,
@@ -83,6 +84,7 @@ export class PlayerFormComponent implements OnInit {
       tokenNo: [editingData?.tokenNo ?? (this.data.totalPlayers + 1), Validators.required],
       name: [editingData?.name, Validators.required],
       position: [editingData?.position, Validators.required],
+      phone: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
       price: [editingData?.price],
       isCaptain: [editingData?.isCaptain],
       image: [editingData?.image, Validators.required],

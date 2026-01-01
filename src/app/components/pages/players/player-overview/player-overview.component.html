@@ -1,7 +1,10 @@
 <div class="relative">
 
   <!-- Close Icon -->
-  <button (click)="closeDialog()" class="z-50 absolute top-2 right-2 text-white hover:text-gray-300 focus:outline-none">
+  <button
+    (click)="closeDialog()"
+    class="z-50 absolute top-2 right-2 text-white hover:text-gray-300 focus:outline-none"
+  >
     <span class="material-icons">close</span>
   </button>
 
@@ -10,63 +13,185 @@
     [config]="{ backdropBorderRadius: '3px' }"
   ></ngx-loading>
 
-  <div class="relative flex flex-col items-center justify-center bg-[url('/images/icons/ground_bg.jpg')] bg-cover bg-center p-6 md:p-8 rounded-lg w-full h-screen">
-    <div class="absolute inset-0 bg-black opacity-60 rounded-lg"></div>
+  <!-- MAIN BACKGROUND -->
+  <div
+    class="relative flex flex-col items-center justify-center
+           bg-[url('/images/icons/st_1.jpg')] bg-cover bg-center
+           brightness-80 contrast-110 saturate-95
+           p-6 md:p-8 rounded-lg w-full h-screen"
+  >
 
-    <!-- Content Container -->
+    <!-- CLUB LOGO + HEADING -->
+    <div class="absolute top-4 left-4 z-30 flex items-center gap-4">
+
+      <!-- Logo -->
+      <div
+        class="bg-black/40 backdrop-blur-sm
+           rounded-xl p-3
+           border border-white/10
+           shadow-md"
+      >
+        <img
+          src="/images/icons/universal_upl_logo.png"
+          alt="Club Logo"
+          class="w-14 md:w-18 h-auto object-contain opacity-90"
+        />
+      </div>
+
+      <!-- Heading Text -->
+      <div class="leading-tight">
+        <h1
+          class="text-white text-lg md:text-xl font-bold tracking-wide"
+          style="font-family: serif, sans-serif"
+        >
+          UNIVERSAL ARTS & SPORTS
+        </h1>
+        <p class="text-gray-300 text-xs md:text-sm tracking-wider uppercase">
+          Premier League Mega Auction 2025
+        </p>
+      </div>
+
+    </div>
+
+    <!-- OVERLAYS -->
+    <div class="absolute inset-0 bg-black/70"></div>
+
+    <div
+      class="absolute inset-0
+             bg-gradient-to-t from-black via-black/50 to-transparent"
+    ></div>
+
+    <div
+      class="absolute inset-0
+             bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),rgba(0,0,0,0.85))]"
+    ></div>
+
+    <!-- CONTENT -->
     <div class="relative z-10 flex flex-col items-center">
 
-      <div class="border-4 border-white shadow-xl rounded-lg overflow-hidden mb-6 md:mb-10 w-full max-w-sm">
-        <img [hidden]="isImageLoading" [src]="data?.player?.image || '/images/icons/avatar.png'"
-             alt="{{ data.player.name }}"
-             class="w-full h-[300px] md:h-[500px] rounded-lg"
-             (load)="onImageLoad()"
-             (error)="onImageError()">
+      <!-- PLAYER IMAGE -->
+      <div
+        class="relative overflow-hidden mb-6 md:mb-10
+               w-full max-w-sm rounded-2xl
+               shadow-[0_0_40px_rgba(255,255,255,0.15)]"
+      >
+        <img
+          [hidden]="isImageLoading"
+          [src]="data?.player?.image || '/images/icons/avatar.png'"
+          alt="{{ data.player.name }}"
+          class="w-full h-[300px] md:h-[500px] rounded-lg"
+          (load)="onImageLoad()"
+          (error)="onImageError()"
+        />
 
         <ng-container *ngIf="isImageLoading">
-          <img [src]="'/images/icons/player_avatar_white.jpeg'"
-               alt=""
-               class="w-[15rem] h-[20rem] md:w-[20rem] md:h-[26rem] rounded-lg">
+          <div
+            class="relative overflow-hidden mb-6 md:mb-10
+                   w-full max-w-sm rounded-2xl shadow-lg"
+          >
+            <img
+              src="/images/icons/player_avatar_white.jpeg"
+              alt=""
+              class="w-[15rem] h-[20rem] md:w-[20rem] md:h-[26rem] rounded-lg"
+            />
+            <div
+              class="pointer-events-none absolute inset-0
+                     bg-gradient-to-t from-black/60 via-transparent to-black/40"
+            ></div>
+          </div>
         </ng-container>
       </div>
 
-      <h2 class="text-4xl md:text-6xl font-extrabold text-white mb-4 md:mb-6 tracking-wide drop-shadow-lg text-center">
-        <span class="uppercase" style="font-family: serif, sans-serif">{{ data.player.name }}</span>
+      <!-- PLAYER NAME -->
+      <h2
+        class="text-4xl md:text-6xl font-extrabold
+               text-white mb-4 md:mb-6
+               tracking-wide drop-shadow-lg text-center"
+      >
+        <span class="uppercase" style="font-family: serif, sans-serif">
+          {{ data.player.name }}
+        </span>
       </h2>
 
-      <div style="width: fit-content; padding-right: 35px; padding-left: 35px" class="border-2 border-gray-200  text-white px-5 py-2 rounded-lg bg-gradient-to-r from-gray-800 via-gray-900 to-black shadow-lg flex items-center justify-center w-full max-w-md">
-        <p class="text-lg md:text-2xl font-semibold tracking-wide">{{ dataUtils?.getPosition(data.player.position) }}</p>
+      <!-- POSITION BADGE -->
+      <div
+        class="relative mt-2 px-8 py-3 rounded-full
+               backdrop-blur-md bg-white/10
+               border border-white/20
+               shadow-[0_0_25px_rgba(255,255,255,0.15)]
+               text-white"
+      >
+        <span
+          class="absolute inset-0 rounded-full
+                 bg-gradient-to-r from-yellow-400/20 via-white/10 to-yellow-400/20 blur-md"
+        ></span>
+
+        <p
+          class="relative z-10 text-xl md:text-2xl
+                 font-bold tracking-widest uppercase"
+        >
+          {{ dataUtils?.getPosition(data.player.position) }}
+        </p>
       </div>
 
     </div>
 
-    <button (click)="this.showDetails = !this.showDetails;" class="absolute right-4 bottom-4 text-white text-xl md:text-2xl focus:outline-none">
-      <span class="transform transition-transform" [ngClass]="{'rotate-180': showDetails, 'rotate-90' : !showDetails}">▼</span>
+    <!-- TOGGLE BUTTON -->
+    <button
+      (click)="showDetails = !showDetails"
+      class="absolute right-4 bottom-4 text-white text-xl md:text-2xl focus:outline-none"
+    >
+      <span
+        class="transform transition-transform"
+        [ngClass]="{
+          'rotate-180': showDetails,
+          'rotate-90': !showDetails
+        }"
+      >
+        ▼
+      </span>
     </button>
 
-    <!-- Toggleable Section -->
-    <div *ngIf="showDetails" class="absolute z-50 right-0 bottom-[70px] mt-6 w-full max-w-xs bg-black bg-opacity-70 p-4 rounded-lg shadow-md text-white flex flex-col gap-4 transition-all duration-300">
-
+    <!-- DETAILS PANEL -->
+    <div
+      *ngIf="showDetails"
+      class="absolute z-50 right-0 bottom-[70px]
+             w-full max-w-xs
+             bg-black/70 p-4 rounded-lg
+             shadow-md text-white
+             flex flex-col gap-4"
+    >
       <div class="flex flex-col">
-        <label for="price" class="text-lg font-semibold mb-1">Price</label>
-        <input id="price" type="number" [(ngModel)]="amount"
-               class="mt-2 px-3 py-2 bg-gray-800 text-white rounded-lg focus:outline-none border border-gray-500">
+        <label class="text-lg font-semibold mb-1">Price</label>
+        <input
+          type="number"
+          [(ngModel)]="amount"
+          class="px-3 py-2 bg-gray-800 text-white rounded-md
+                 focus:outline-none border border-gray-500"
+        />
       </div>
 
       <div class="flex flex-col">
-        <label for="team" class="text-lg font-semibold mb-1">Team</label>
-        <select id="team" [(ngModel)]="selectedTeam"
-                class="mt-2 px-3 py-2 bg-gray-800 text-white rounded-lg focus:outline-none border border-gray-500">
-          <option *ngFor="let team of data?.teams" [ngValue]="team">{{ team.name }}</option>
+        <label class="text-lg font-semibold mb-1">Team</label>
+        <select
+          [(ngModel)]="selectedTeam"
+          class="px-3 py-2 bg-gray-800 text-white
+                 rounded-lg focus:outline-none border border-gray-500"
+        >
+          <option *ngFor="let team of data?.teams" [ngValue]="team">
+            {{ team.name }}
+          </option>
         </select>
       </div>
 
-      <button (dblclick)="updatePlayerDetails()" class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200">
+      <button
+        (dblclick)="updatePlayerDetails()"
+        class="bg-blue-500 text-white py-2 px-4
+               rounded-lg hover:bg-blue-600 transition"
+      >
         Save
       </button>
-
     </div>
 
   </div>
-
 </div>

@@ -1,6 +1,6 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
-import {CurrencyPipe, NgForOf, NgIf, TitleCasePipe} from "@angular/common";
+import {CurrencyPipe, NgClass, NgForOf, NgIf, TitleCasePipe} from "@angular/common";
 import {Team, TeamStatus} from "../../../../model/team";
 import {Player} from "../../../../model/player";
 
@@ -11,7 +11,8 @@ import {Player} from "../../../../model/player";
     NgForOf,
     TitleCasePipe,
     CurrencyPipe,
-    NgIf
+    NgIf,
+    NgClass
   ],
   templateUrl: './team-status.component.html',
   styleUrl: './team-status.component.scss'

@@ -3,76 +3,188 @@
   [config]="{ backdropBorderRadius: '3px' }"
 ></ngx-loading>
 
-<div class="bg-green-600 min-h-screen p-4 relative overflow-hidden">
-  <!-- Header Section -->
-  <div class="flex items-center mb-10 p-5 rounded-lg bg-green-800">
-    <img src="/images/icons/universal_upl_logo.png" alt="Logo" class="w-28 h-28 object-cover mr-6" />
+<div class="min-h-screen p-4 relative overflow-hidden page-container">
+
+  <!-- ================= HEADER ================= -->
+  <div
+    class="flex items-center gap-6 mb-10 p-6
+           rounded-2xl
+           bg-black/60 backdrop-blur-md
+           border border-white/10
+           shadow-xl"
+  >
+
+    <!-- Logo -->
+    <div
+      class="flex items-center justify-center
+             bg-black/50
+             rounded-2xl
+             p-4
+             border border-white/20
+             shadow-lg"
+    >
+      <img
+        src="/images/icons/universal_upl_logo.png"
+        alt="Logo"
+        class="w-24 h-24 md:w-28 md:h-28 object-contain opacity-95"
+      />
+    </div>
+
+    <!-- Header Text -->
     <div class="text-left">
-      <h1 class="text-5xl font-bold text-white" style="font-family: fangsong" >UNIVERSAL ARTS & SPORTS</h1>
-      <h2 class="text-2xl font-semibold text-white mt-3" style="font-family: sarif,serif">Premier League Mega Auction 2024</h2>
+      <h1
+        class="text-4xl md:text-5xl font-extrabold text-white tracking-wide"
+        style="font-family: fangsong"
+      >
+        UNIVERSAL ARTS & SPORTS
+      </h1>
+
+      <h2
+        class="text-xl md:text-2xl font-semibold
+               text-gray-300 mt-2 tracking-wider uppercase"
+        style="font-family: serif"
+      >
+        Premier League Mega Auction 2025
+      </h2>
     </div>
   </div>
 
-  <!-- Team List Section -->
-  <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-6 w-full mx-auto p-4 bg-green-700 rounded-lg shadow-lg">
-    <div *ngFor="let t of teamService.teams"
-         class="relative flex flex-col items-center justify-center p-8 border-4 transition-all duration-300 hover:shadow-lg"
-         [ngStyle]="{
-         'border-color': t.primaryColor,
-         'background-color': 'rgba(255, 255, 255, 0.2)',
-         'border-radius': '0'
-       }">
+  <!-- ================= TEAM LIST ================= -->
+  <div
+    class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4
+           gap-6 w-full mx-auto p-4
+           rounded-lg shadow-lg"
+  >
+    <div
+      *ngFor="let t of teamService.teams"
+      class="relative flex flex-col items-center justify-center
+             team-card p-8 border-4
+             transition-all duration-300 hover:shadow-xl"
+      [ngStyle]="{ 'border-color': t.primaryColor }"
+    >
 
-      <!-- Team Name -->
-      <h2 class="relative z-10 text-3xl font-bold mb-2" [ngStyle]="{'color': t.primaryColor}">
+      <!-- SQUAD LOCKED BADGE -->
+      <div
+        *ngIf="t?.players?.length === 8"
+        class="absolute top-3 right-3 z-50
+               flex items-center gap-2
+               px-4 py-1.5
+               bg-black/80
+               border border-gray-600
+               rounded-full shadow-md"
+      >
+        <span class="text-green-400 text-lg font-bold">✔</span>
+        <span class="text-white text-sm font-semibold tracking-wide">
+          Squad Locked
+        </span>
+      </div>
+
+      <!-- TEAM NAME -->
+      <h2
+        class="relative z-10 text-3xl font-extrabold
+               text-white mb-4 tracking-wide text-center"
+      >
         {{ t.name }}
       </h2>
 
-      <!-- Team Balance -->
-      <p class="relative z-10 text-3xl font-semibold text-white">
-        ₹{{ teamService?.getTeamStatus(t)?.availableAmount }}/{{ teamService?.getTeamStatus(t)?.allocatedAmount }}
-      </p>
-
-      <!-- Player Count Badge -->
-      <div *ngIf="t?.players?.length"
-           class="absolute top-2 right-2 bg-blue-600 text-white text-xs font-semibold rounded-full px-3 py-1">
-        {{ t?.players?.length }} player{{ t?.players?.length > 1 ? 's' : '' }}
+      <!-- TEAM BUDGET -->
+      <div
+        class="relative z-10
+               px-6 py-2 rounded-full
+               bg-black/60
+               border border-white/20
+               shadow-md"
+      >
+        <p
+          class="text-2xl font-bold text-yellow-300 tracking-wide"
+          style="font-family: Inter, serif"
+        >
+          ₹{{ teamService?.getTeamStatus(t)?.availableAmount }}
+          <span class="text-gray-400 text-lg font-medium">
+            / {{ teamService?.getTeamStatus(t)?.allocatedAmount }}
+          </span>
+        </p>
       </div>
 
+      <!-- PLAYER COUNT (WHEN NOT COMPLETE) -->
+      <div
+        *ngIf="t?.players?.length && t?.players?.length !== 8"
+        class="absolute top-2 right-2
+               bg-blue-600 text-white
+               text-xs font-semibold
+               rounded-full px-3 py-1"
+      >
+        {{ t.players.length }} player{{ t.players.length > 1 ? 's' : '' }}
+      </div>
+
+      <!-- TEAM COLOR MARK -->
       <div class="absolute inset-0 flex items-center justify-center z-0">
-        <div class="w-40 h-40" [ngStyle]="{'background-color': t.primaryColor, 'opacity': '0.1', 'border-radius': '0'}"></div>
+        <div
+          class="w-40 h-40"
+          [ngStyle]="{
+            'background-color': t.primaryColor,
+            'opacity': '0.08'
+          }"
+        ></div>
       </div>
     </div>
   </div>
 
-  <!-- Player Tokens Section -->
-  <div class="max-w-full mx-auto mt-6 overflow-auto p-4 bg-black bg-opacity-50 rounded-lg shadow-xl"
-       style="max-height: 50vh;">
-    <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-6 w-full p-8">
+  <!-- ================= PLAYER TOKENS ================= -->
+  <div
+    class="max-w-full mx-auto mt-6 overflow-auto p-4
+           token-section bg-opacity-50
+           rounded-lg shadow-xl"
+    style="max-height: 50vh;"
+  >
+    <div
+      class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10
+             gap-6 w-full p-8"
+    >
       <div
         *ngFor="let player of playerService.players"
-        class="relative token-item bg-white flex items-center justify-center cursor-pointer text-xl font-bold text-black h-24 w-24 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-300"
+        class="relative token_container token-item
+               flex items-center justify-center
+               cursor-pointer text-xl font-bold
+               text-white h-24 w-24
+               shadow-md hover:shadow-lg
+               transition-all duration-300"
         [ngClass]="{
-          'border-blue-500': player?.price,
-          'bg-gray-200': player?.price
+          'border-blue-500 bg-gray-200': player?.price
         }"
         (dblclick)="openPlayerOverviewDialog(player)"
       >
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl font-semibold opacity-50"
-             [ngClass]="{'opacity-50': player?.price}">
+
+        <!-- TOKEN NUMBER -->
+        <div
+          class="absolute top-1/2 left-1/2
+                 transform -translate-x-1/2 -translate-y-1/2
+                 text-4xl font-semibold opacity-50"
+        >
           {{ player.tokenNo }}
         </div>
 
-        <div *ngIf="player?.price" class="absolute inset-0 flex items-center justify-center text-blue-500 text-4xl z-10">
-          ❌ <!-- or ✔️ -->
+        <!-- SOLD ICON -->
+        <div
+          *ngIf="player?.price"
+          class="absolute inset-0
+                 flex items-center justify-center
+                 text-blue-500 text-4xl z-10"
+        >
+          ❌
         </div>
       </div>
     </div>
   </div>
 
-  <button [routerLink]="'/players'" class="absolute right-4 bottom-4 text-white text-xl md:text-2xl focus:outline-none">
-    <span class="transform transition-transform">▼</span>
+  <!-- NAVIGATION -->
+  <button
+    [routerLink]="'/players'"
+    class="absolute right-4 bottom-4
+           text-white text-xl md:text-2xl
+           focus:outline-none"
+  >
+    ▼
   </button>
-
 
 </div>

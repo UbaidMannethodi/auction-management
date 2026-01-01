@@ -57,6 +57,7 @@ export class TeamService {
 
       const teamStatus: any = {};
       teamStatus.allocatedAmount = environment.team.allocatedAmount;
+      teamStatus.totalSpend = totalPrice;
       teamStatus.availableAmount = environment.team.allocatedAmount - totalPrice;
       teamStatus.selectedPositions = groupedPlayersByPosition;
       teamStatus.openPositions = openPositions;

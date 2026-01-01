@@ -1,7 +1,13 @@
-<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
+<ngx-loading [show]="loading || teamStatusPdfGeneratorService.loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
 
 <!-- Add Team Button -->
 <div class="flex justify-end mb-4">
+  <!-- Download PDF Button -->
+  <button mat-button color="primary" (click)="generateTeamReport()" class="flex items-center">
+    <mat-icon>download</mat-icon>
+    <span class="ml-2 mr-1">Download PDF</span>
+  </button>
+
   <button
     mat-raised-button
     color="primary"

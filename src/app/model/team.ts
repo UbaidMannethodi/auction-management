@@ -12,6 +12,7 @@ export interface Team {
 
 export interface TeamStatus {
   allocatedAmount: number;
+  totalSpend: number;
   availableAmount: number;
   selectedPositions: any;
   openPositions: string[];

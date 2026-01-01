@@ -1,67 +1,123 @@
-<ngx-loading
-  [show]="loading"
-  [config]="{ backdropBorderRadius: '3px' }"
-></ngx-loading>
+<h2 mat-dialog-title class="text-center text-xl font-semibold">
+  {{ data.editMode ? 'Modify Player' : 'Add New Player' }}
+</h2>
 
-<h2 mat-dialog-title class="text-center text-2xl font-semibold">{{data.editMode ? 'Modify Player' : 'Add New Player'}}</h2>
-<form [formGroup]="playerForm">
+<form [formGroup]="playerForm" class="dense-form">
 
-  <mat-dialog-content class="space-y-6">
+  <mat-dialog-content class="space-y-4 py-2">
 
     <!-- Token -->
     <mat-form-field class="w-full" appearance="fill">
       <mat-label><mat-icon>token</mat-icon> Token No</mat-label>
-      <input matInput formControlName="tokenNo" type="number" placeholder="Enter Token Number" />
-      <mat-error *ngIf="playerForm.get('tokenNo')?.hasError('required')">Token Number is required.</mat-error>
+      <input matInput formControlName="tokenNo" type="number" />
     </mat-form-field>
 
-    <!-- Player Name -->
+    <!-- Name -->
     <mat-form-field class="w-full" appearance="fill">
       <mat-label><mat-icon>person</mat-icon> Name</mat-label>
-      <input matInput formControlName="name" required placeholder="Enter player name" />
-      <mat-error *ngIf="playerForm.get('name')?.hasError('required')">Name is required.</mat-error>
+      <input matInput formControlName="name" />
     </mat-form-field>
 
     <!-- Position -->
     <mat-form-field class="w-full" appearance="fill">
       <mat-label><mat-icon>work</mat-icon> Position</mat-label>
-      <mat-select formControlName="position" required placeholder="Select position">
+      <mat-select formControlName="position">
         <mat-option *ngFor="let position of positions" [value]="position.id">
           {{ position.name }}
         </mat-option>
       </mat-select>
-      <mat-error *ngIf="playerForm.get('position')?.hasError('required')">Position is required.</mat-error>
     </mat-form-field>
 
-    <!-- Mark as Captain -->
-    <mat-checkbox formControlName="isCaptain">Mark as Captain</mat-checkbox>
+    <!-- Phone Number -->
+    <mat-form-field class="w-full" appearance="fill">
+      <mat-label>
+        <mat-icon>phone</mat-icon>
+        Phone Number
+      </mat-label>
 
-    <!-- Image Upload -->
+      <!-- NON-EDITABLE PREFIX -->
+      <span matPrefix class="font-semibold text-gray-600 pr-2">
+    +91
+  </span>
+
+      <input
+        matInput
+        type="tel"
+        inputmode="numeric"
+        formControlName="phone"
+        maxlength="10"
+        placeholder="XXXXXXXXXX"
+        autocomplete="off"
+      />
+
+      <mat-hint>Indian mobile number</mat-hint>
+
+      <mat-error *ngIf="playerForm.get('phone')?.hasError('required')">
+        Phone number is required
+      </mat-error>
+
+      <mat-error *ngIf="playerForm.get('phone')?.hasError('pattern')">
+        Enter a valid 10-digit mobile number
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Captain -->
+    <mat-checkbox formControlName="isCaptain">
+      Mark as Captain
+    </mat-checkbox>
+
+    <!-- Image -->
     <div class="w-full">
-      <mat-label><mat-icon>image</mat-icon> Upload Image</mat-label>
-      <div class="flex flex-col items-center mt-2">
-        <input type="file" (change)="onImageSelected($event)" accept="image/*" class="hidden" id="image-upload" />
-        <label for="image-upload" class="cursor-pointer w-full flex flex-col items-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 transition duration-200">
-          <span class="text-gray-500">click to upload</span>
-        </label>
-        <mat-error *ngIf="playerForm.get('image')?.hasError('required')" class="mt-1">Image is required.</mat-error>
-        <div *ngIf="imagePreview" class="mt-2">
-          <img [src]="imagePreview" alt="Image Preview" class="w-32 h-32 rounded-lg border border-gray-300" />
-        </div>
+      <mat-label>
+        <mat-icon>image</mat-icon> Upload Image
+      </mat-label>
+
+      <input
+        type="file"
+        #imageInput
+        (change)="onImageSelected($event)"
+        accept="image/*"
+        class="hidden"
+      />
+
+      <div
+        (click)="imageInput.click()"
+        class="cursor-pointer w-full flex flex-col items-center
+           p-2 border-2 border-dashed border-gray-300
+           rounded-lg hover:border-blue-500 transition"
+      >
+        <span class="text-gray-500 text-sm">Click to upload</span>
+      </div>
+
+      <mat-error
+        *ngIf="playerForm.get('image')?.hasError('required')"
+        class="mt-1"
+      >
+        Image is required.
+      </mat-error>
+
+      <div *ngIf="imagePreview" class="mt-2">
+        <img
+          [src]="imagePreview"
+          alt="Image Preview"
+          class="w-24 h-24 rounded-lg border border-gray-300"
+        />
       </div>
     </div>
 
     <!-- Price -->
-    <mat-form-field class="w-full" appearance="fill" *ngIf="data?.editMode">
+    <mat-form-field *ngIf="data?.editMode" class="w-full" appearance="fill">
       <mat-label><mat-icon>attach_money</mat-icon> Price</mat-label>
-      <input matInput formControlName="price" type="number" placeholder="Enter price" />
-      <mat-error *ngIf="playerForm.get('price')?.hasError('required')">Price is required.</mat-error>
+      <input matInput formControlName="price" type="number" />
     </mat-form-field>
 
   </mat-dialog-content>
 
-  <mat-dialog-actions align="end" class="space-x-4">
+  <mat-dialog-actions align="end" class="space-x-3">
     <button mat-button color="warn" (click)="onCancel()">Cancel</button>
-    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="playerForm.invalid">{{data.editMode ? 'Modify Player' : 'Add Player'}}</button>
+    <button mat-raised-button color="primary"  (click)="onSubmit()" [disabled]="playerForm.invalid">
+      {{ data.editMode ? 'Modify Player' : 'Add Player' }}
+    </button>
   </mat-dialog-actions>
+
 </form>

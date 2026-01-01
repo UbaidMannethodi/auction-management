@@ -16,6 +16,7 @@ import {TeamOverviewComponent} from "./team-overview/team-overview.component";
 import {TeamStatusComponent} from "./team-status/team-status.component";
 import {Player} from "../../../model/player";
 import {DataUtils} from "../../../utils/data-utils";
+import {TeamStatusPdfGeneratorService} from "../../../services/team/team-status-pdf-generator.service";
 
 
 @Component({
@@ -45,6 +46,7 @@ export class TeamsComponent implements OnInit {
   constructor(private dialog: MatDialog,
               public teamService: TeamService,
               private toastr: ToastrService,
+              public teamStatusPdfGeneratorService: TeamStatusPdfGeneratorService,
   ) {}
 
   ngOnInit() {
@@ -59,7 +61,6 @@ export class TeamsComponent implements OnInit {
       if (!this.teamService?.teams?.length || forceFetch) {
         this.teamService.teams = await this.teamService.getTeam();
       }
-
     } catch (error: any) {
       this.loading = false;
       this.toastr.error(error, 'Something went wrong.');
@@ -108,6 +109,10 @@ export class TeamsComponent implements OnInit {
     return [...players, ...defaultPlayers];
   }
 
+  async generateTeamReport() {
+   await this.teamStatusPdfGeneratorService.generateAuctionReport(this.teamService.teams);
+  }
+
   openAddTeamDialog(team?: Team): void {
     const editMode = !!team
     const dialogRef = this.dialog.open(TeamFormComponent, {
@@ -123,7 +128,7 @@ export class TeamsComponent implements OnInit {
   }
 
   openTeamOverviewDialog(team:Team): void {
-    const dialogRef = this.dialog.open(TeamOverviewComponent, {
+    this.dialog.open(TeamOverviewComponent, {
       minWidth: '98vw',
       minHeight: '98vh',
       panelClass: 'team-lineup-dialog',
@@ -133,8 +138,8 @@ export class TeamsComponent implements OnInit {
 
   openTeamStatusDialog(team:Team): void {
     this.dialog.open(TeamStatusComponent, {
-      minWidth: '70vw',
-      minHeight: '85vh',
+      minWidth: '99vw',
+      minHeight: '100vh',
       data: {
         teamStatus: this.teamService.getTeamStatus(team),
         team: team

@@ -122,9 +122,8 @@ export class PlayersComponent implements OnInit {
     const doc = new jsPDF();
 
     // Define position order and titles
-    const positionOrder = ['captain', 'goalkeeper', 'defender', 'forward'];
+    const positionOrder = ['goalkeeper', 'defender', 'forward'];
     const positionTitles: { [key: string]: string } = {
-      captain: 'Captains',
       goalkeeper: 'Goal keepers',
       defender: 'Defenders',
       forward: 'Forwards',
@@ -132,7 +131,7 @@ export class PlayersComponent implements OnInit {
 
     // Title for the document (bold)
     doc.setFont('Helvetica', 'bold'); // Set font to bold
-    doc.text('UPL Players List', 14, 10);
+    doc.text('UPL Players List 2025', 14, 10);
     doc.setFont('Helvetica', 'normal'); // Reset font back to normal
     let yPosition = 40; // Initial Y position for adding content
 
@@ -141,11 +140,11 @@ export class PlayersComponent implements OnInit {
       let playersByPosition = [];
 
       // Filter players based on position
-      if (position === 'captain') {
-        playersByPosition = this.playerService.players.filter(player => player.isCaptain);
-      } else {
+      // if (position === 'captain') {
+      //   playersByPosition = this.playerService.players.filter(player => player.isCaptain);
+      // } else {
         playersByPosition = this.playerService.players.filter(player =>  (player.position).toLowerCase() === position.toLowerCase());
-      }
+      // }
 
       // Skip if no players for this position
       if (playersByPosition.length === 0) continue;
@@ -163,7 +162,7 @@ export class PlayersComponent implements OnInit {
 
       // Add table for the position
       autoTable(doc, {
-        head: [['SI No', 'Name', 'Remark']], // Updated header to include SI No
+        head: [['SI No', 'Name', 'Remark']],
         body: tableData,
         startY: yPosition,
         theme: 'striped',
@@ -178,7 +177,7 @@ export class PlayersComponent implements OnInit {
     }
 
     // Save the PDF
-    doc.save('UPL_2024_players_list.pdf');
+    doc.save('UPL_2025_players_list.pdf');
   }
 
   openAddPlayerDialog(player?:Player): void {

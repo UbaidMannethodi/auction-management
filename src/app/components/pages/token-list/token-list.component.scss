@@ -1,4 +1,27 @@
 .max-w-100 {
   max-width: 100rem;
-  //margin: 0 200px 0 200px;
 }
+
+.page-container {
+  background: #0A1E0DFF;
+  .header-wrapper {
+    background: #0A1E0DFF;
+    border-radius: 0px 0px 0px 0px;
+    box-shadow: 0px 0px 2px #171a1f14, 0px 4px 7px #171a1f21;
+  }
+  .team-card {
+  background: #1E2128FF;
+  border-radius: 16px;
+  border-style: solid;
+  box-shadow: 0px 0px 2px #171a1f14, 0px 1px 2.5px #171a1f12;
+  }
+  .token-section {
+    background: #0A1E0DFF;
+    .token_container {
+      background: #1E2128FF;
+      border-radius: 6px;
+    }
+  }
+
+}
+

@@ -1,55 +1,108 @@
-<div class="p-6 lg:p-10">
-  <!-- Display Allocated and Available Amounts and Total Player Count -->
-  <div class="mb-8 flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0 lg:space-x-8">
-    <h2 class="text-xl lg:text-3xl text-red-500 font-semibold">
-      Available Amount: ₹{{ data.teamStatus?.availableAmount }}
-    </h2>
-    <h2 class="text-xl lg:text-3xl font-semibold text-green-500">
-      Allocated Amount: ₹{{ data.teamStatus?.allocatedAmount }}
-    </h2>
-  </div>
+<div class="bg-black w-full h-[100vh] p-6 flex justify-center">
+  <div
+    class="w-full h-full rounded-xl bg-gradient-to-b
+           from-[#1a1a1a] to-[#0d0d0d]
+           border border-gray-800 shadow-lg
+           flex flex-col overflow-hidden"
+  >
 
-  <div>
-    <h2 class="text-xl lg:text-3xl font-semibold text-gray-800">
-      Total Players:
-      <span *ngIf="playersCount; else noPlayers">
-        {{ playersCount }}
-      </span>
-      <ng-template #noPlayers>
-        <span class="text-red-500">No Players Selected</span>
-      </ng-template>
-    </h2>
-  </div>
+    <!-- HEADER (FIXED) -->
+    <div class="p-8 border-b border-gray-700 shrink-0">
 
-  <!-- Players Section -->
-  <div class="overflow-y-auto max-h-[500px] mt-6">
-    <div *ngFor="let position of objectKeys(data.teamStatus?.selectedPositions)">
-      <h3 class="text-lg lg:text-2xl font-semibold text-gray-700 capitalize mt-6">{{ position }}</h3>
-      <div class="overflow-x-auto mt-3">
-        <table class="min-w-full border border-gray-300 rounded-lg overflow-hidden">
-          <thead *ngIf="data.teamStatus?.selectedPositions[position]?.length">
-          <tr class="bg-gray-200 text-gray-700 uppercase text-base lg:text-lg leading-normal">
-            <th class="py-4 px-6 text-left">Photo</th>
-            <th class="py-4 px-6 text-left">Name</th>
-            <th class="py-4 px-6 text-left">Bid Price</th>
-          </tr>
-          </thead>
-          <tbody class="text-gray-600 text-base lg:text-lg font-light">
-          <tr *ngFor="let player of data.teamStatus?.selectedPositions[position]"
-              class="border-b border-gray-300 hover:bg-gray-100">
-            <ng-container *ngIf="player?.id">
-            <td class="py-3 px-6 text-left font-bold">
-              <img [src]="player.image" alt="{{ player.name }}" class="w-12 h-12 lg:w-14 lg:h-14 rounded-full" />
-            </td>
-            <td class="py-3 px-6 text-left font-bold">{{ player.name }}</td>
-            <td class="py-3 px-6 text-left font-bold">
-              {{ player.price !== null ? '₹' + player.price : 'N/A' }}
-            </td>
-            </ng-container>
-          </tr>
-          </tbody>
-        </table>
+      <!-- TEAM NAME -->
+      <h2 class="text-white text-4xl font-extrabold tracking-wide mb-6">
+        {{ data.team?.name }}
+      </h2>
+
+      <!-- SUMMARY CARDS -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- TOTAL SPENT -->
+        <div
+          class="bg-green-500/25 border-2 border-green-500
+                 rounded-2xl px-8 py-6 shadow-lg"
+        >
+          <p class="text-green-200 text-xl font-bold uppercase tracking-wider">
+            Total Spend
+          </p>
+          <p class="text-white text-4xl font-extrabold mt-2">
+            ₹{{ data.teamStatus?.totalSpend }}
+          </p>
+        </div>
+
+        <!-- BUDGET REMAINING -->
+        <div
+          class="bg-red-500/25 border-2 border-red-500
+                 rounded-2xl px-8 py-6 shadow-lg animate-pulse">
+          <p class="text-red-200 text-xl font-bold uppercase tracking-wider">
+            Remaining Budget
+          </p>
+          <p class="text-white text-4xl font-extrabold mt-2">
+            ₹{{ data.teamStatus?.availableAmount }}
+          </p>
+        </div>
+
+        <!-- SQUAD SIZE -->
+        <div
+          class="bg-blue-500/25 border-2 border-blue-500
+                 rounded-2xl px-8 py-6 shadow-lg"
+        >
+          <p class="text-blue-200 text-xl font-bold uppercase tracking-wider">
+            Squad Size
+          </p>
+          <p class="text-white text-4xl font-extrabold mt-2">
+            {{ playersCount || 0 }}
+          </p>
+        </div>
+
       </div>
+    </div>
+
+    <!-- PLAYERS (SCROLLABLE) -->
+    <div class="flex-1 p-6 space-y-10 overflow-y-auto">
+
+      <div *ngFor="let position of objectKeys(data.teamStatus?.selectedPositions)">
+        <!-- POSITION TITLE -->
+        <h3 class="text-gray-300 text-2xl font-semibold mb-6 capitalize">
+          {{ position }}
+        </h3>
+
+        <!-- PLAYER LIST (2 COLUMNS, SAFE) -->
+        <div class="space-y-4 columns-1 md:columns-2">
+          <ng-container
+            *ngFor="let player of data.teamStatus?.selectedPositions[position]"
+          >
+            <div class="row">
+              <div
+                *ngIf="player?.id"
+                class="flex items-center justify-between
+                       bg-[#141414] rounded-xl
+                       px-6 py-4
+                       border border-gray-800
+                       break-inside-avoid"
+              >
+                <div class="flex items-center space-x-4">
+                  <img
+                    [src]="player.image"
+                    [alt]="player.name"
+                    class="w-12 h-12 rounded-full
+                           object-cover
+                           border border-gray-700"
+                  />
+                  <span class="text-white text-lg font-semibold">
+                    {{ player.name }}
+                  </span>
+                </div>
+
+                <span class="text-blue-400 text-lg font-bold">
+                  ₹{{ player.price }}
+                </span>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
