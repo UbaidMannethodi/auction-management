@@ -10,8 +10,8 @@ export const environment = {
   },
 
   team: {
-    allocatedAmount: 700,
-    totalPlayersCount: 6
+    allocatedAmount: 800,
+    totalPlayersCount: 7
   },
 
   cred: {

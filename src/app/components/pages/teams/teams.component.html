@@ -3,8 +3,7 @@
 <!-- Add Team Button -->
 <div class="flex justify-end mb-4">
   <!-- Download PDF Button -->
-<!--  <button mat-button color="primary" (click)="generateTeamReport()" class="flex items-center">-->
-  <button mat-button color="primary" class="flex items-center">
+  <button mat-button color="primary" (click)="generateTeamReport()" class="flex items-center">
     <mat-icon>download</mat-icon>
     <span class="ml-2 mr-1">Download PDF</span>
   </button>
@@ -26,17 +25,18 @@
        [ngStyle]="{'border-color': team.primaryColor, 'background-color': 'white'}">
 
     <!-- Team Name Heading -->
-    <div class="w-full text-center py-3 mb-4 rounded-xl shadow-md transform -translate-y-4 -mt-6"
+    <div class="w-full text-center flex items-center justify-self-start py-3 mb-4 rounded-xl shadow-md transform -translate-y-4 -mt-6"
          [ngStyle]="{
            'background': 'linear-gradient(to right, ' + team.primaryColor + ', ' + team.secondaryColor + ')'
          }">
+      <img [src]="team?.logo" width="40" height="40" alt="{{ team.manager?.name || 'Default Avatar' }}">
       <h3 class="text-2xl font-bold text-white tracking-wide">{{ team.name }}</h3>
     </div>
 
     <!-- Manager Section -->
     <div class="p-4 rounded-lg flex flex-col items-center space-y-2 border"
          [ngStyle]="{'border-color': team.primaryColor, 'background-color': 'white'}">
-      <img [src]="team?.manager?.image || '/images/icons/avatar.png'" alt="{{ team.manager?.name || 'Default Avatar' }}"
+      <img (click)="openImagePreview(team)" [src]="team?.manager?.image || '/images/icons/avatar.png'" alt="{{ team.manager?.name || 'Default Avatar' }}"
            class="w-20 h-20 rounded-full border-4" [ngStyle]="{'border-color': team.primaryColor}">
       <h3 class="text-xl font-bold">
         {{ team.manager?.name || '(No Manager)' }}

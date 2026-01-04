@@ -2,7 +2,7 @@ import {Component, Inject} from '@angular/core';
 import {MatFormField} from "@angular/material/form-field";
 import {MatOption} from "@angular/material/core";
 import {MatSelect} from "@angular/material/select";
-import {NgClass, NgForOf, NgIf} from "@angular/common";
+import {NgClass, NgForOf, NgIf, UpperCasePipe} from "@angular/common";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormsModule} from "@angular/forms";
 import {MatInput} from "@angular/material/input";
@@ -26,14 +26,16 @@ import {DataUtils} from "../../../../utils/data-utils";
     MatInput,
     NgxLoadingModule,
     NgIf,
-    NgClass
+    NgClass,
+    UpperCasePipe
   ],
   templateUrl: './player-overview.component.html',
   styleUrl: './player-overview.component.scss'
 })
 export class PlayerOverviewComponent {
 
-  isImageLoading: boolean = false;
+  isImageLoading: boolean = true;
+  imageError = false;
   loading = false;
   showDetails = false;
 
@@ -110,6 +112,7 @@ export class PlayerOverviewComponent {
   }
 
   onImageError() {
+    this.imageError = true;
     this.isImageLoading = false;
   }
 

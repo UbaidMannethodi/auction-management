@@ -21,6 +21,7 @@ import {PlayerService} from "../../../../services/players/player.service";
 import {Team} from "../../../../model/team";
 import {ToastrService} from "ngx-toastr";
 import {TeamService} from "../../../../services/team/team.service";
+import {ImageUtils} from "../../../../utils/image-utils";
 
 @Component({
   selector: 'app-team-form',
@@ -54,6 +55,9 @@ export class TeamFormComponent implements OnInit {
     players: false,
   }
 
+  imagePreview: string | ArrayBuffer | null = null;
+  imageFile: File | null = null;
+
   teamForm: FormGroup;
   teamData: Team;
 
@@ -70,6 +74,7 @@ export class TeamFormComponent implements OnInit {
       name: ['', Validators.required],
       primaryColor: ['#000000', Validators.required],
       secondaryColor: ['#FFFFFF', Validators.required],
+      logo: ['', Validators.required],
       manager: [''],
       players: [''],
     });
@@ -90,13 +95,32 @@ export class TeamFormComponent implements OnInit {
       name: [editingData?.name, Validators.required],
       primaryColor: [editingData?.primaryColor, Validators.required],
       secondaryColor: [editingData?.secondaryColor, Validators.required],
+      logo: [editingData?.logo, Validators.required],
       manager: [editingData?.manager?.id],
       players: [this.getPlayersIDs(editingData?.players) || []],
     });
+    if (editingData?.logo) {
+      this.imagePreview = editingData.logo;
+    }
   }
 
   getPlayersIDs(players: Player[]): string[] {
     return (players || []).map(player => player.id);
+  }
+
+  onLogoSelected(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files.length) {
+      this.imageFile = target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        this.imagePreview = reader.result; // Set the preview image source
+      };
+
+      reader.readAsDataURL(this.imageFile); // Read file as data URL
+      this.teamForm.patchValue({ logo: this.imageFile });
+    }
   }
 
   async getManagers() {
@@ -140,6 +164,7 @@ export class TeamFormComponent implements OnInit {
       this.loading.players = false;
     }
   }
+
   async onSubmit(): Promise<void> {
     if (!this.data?.editMode) {
       this.createTeam();
@@ -152,7 +177,12 @@ export class TeamFormComponent implements OnInit {
     if (this.teamForm.valid) {
       try {
         this.loading.posting = true;
-        await this.teamService.addTeam(this.teamForm.value).then( () => {
+        const imageUrl = await ImageUtils.getImageUrl(this.imageFile);
+        const teamData = {
+          ...this.teamForm.value,
+          logo: imageUrl,
+        };
+        await this.teamService.addTeam(teamData).then( () => {
           this.toastr.success('', 'Team added successfully.');
           this.dialogRef.close({ type: 'success' });
           this.loading.posting = false;
@@ -169,7 +199,18 @@ export class TeamFormComponent implements OnInit {
     if (this.teamForm.valid) {
       try {
         this.loading.posting = true;
-        await this.teamService.editTeam(this.teamForm?.value?.id, this.teamForm?.value).then( (players) => {
+        let imageUrl;
+        if (this.imageFile) {
+          imageUrl = await ImageUtils.getImageUrl(this.imageFile);
+        } else {
+          imageUrl = this.teamData?.logo
+        }
+
+        const teamData = {
+          ...this.teamForm.value,
+          logo: imageUrl,
+        };
+        await this.teamService.editTeam(this.teamForm?.value?.id, teamData).then( (players) => {
           this.toastr.success('', 'Team modified successfully.');
           this.dialogRef.close({type: 'success', players});
           this.loading.posting = false;

@@ -45,7 +45,9 @@ export class ManagerFormComponent implements OnInit {
 
   mangerData: Manager;
   imagePreview: string | ArrayBuffer | null = null;
+  displayImagePreview: string | ArrayBuffer | null = null;
   imageFile: File | null = null;
+  dImageFile: File | null = null;
 
   loading = false;
 
@@ -69,9 +71,13 @@ export class ManagerFormComponent implements OnInit {
       id: [editingData?.id],
       name: [editingData?.name, Validators.required],
       image: [editingData?.image, Validators.required],
+      displayImage: [editingData?.displayImage],
     });
     if (editingData?.image) {
       this.imagePreview = editingData.image;
+    }
+    if (editingData?.displayImage) {
+      this.displayImagePreview = editingData.displayImage;
     }
   }
 
@@ -84,13 +90,15 @@ export class ManagerFormComponent implements OnInit {
   }
 
   async createManager(): Promise<void> {
-    if (this.managerForm.valid && this.imageFile) {
+    if (this.managerForm.valid && this.imageFile && this.dImageFile) {
       try {
         this.loading = true;
         const imageUrl = await ImageUtils.getImageUrl(this.imageFile);
+        const dImageURL = await ImageUtils.getImageUrl(this.dImageFile);
         const managerData = {
           ...this.managerForm.value,
-          image: imageUrl
+          image: imageUrl,
+          displayImage: dImageURL,
         };
         await this.managersService.addManager(managerData).then( () => {
           this.toastr.success('', 'Manager added successfully.');
@@ -110,14 +118,23 @@ export class ManagerFormComponent implements OnInit {
       try {
         this.loading = true;
         let imageUrl;
+        let dImageURL;
         if (this.imageFile) {
           imageUrl = await ImageUtils.getImageUrl(this.imageFile);
         } else {
           imageUrl = this.data?.manager?.image
         }
+
+        if (this.dImageFile) {
+          dImageURL = await ImageUtils.getImageUrl(this.dImageFile);
+        } else {
+          dImageURL = this.data?.manager?.displayImage
+        }
+
         const mangerData = {
           ...this.managerForm.value,
-          image: imageUrl
+          image: imageUrl,
+          displayImage: dImageURL,
         };
         await this.managersService.editManager(this.mangerData?.id, mangerData).then( (mangers: any) => {
           this.toastr.success('', 'Manager modified successfully.');
@@ -143,6 +160,21 @@ export class ManagerFormComponent implements OnInit {
 
       reader.readAsDataURL(this.imageFile); // Read file as data URL
       this.managerForm.patchValue({ image: this.imageFile });
+    }
+  }
+
+  onDImageSelected(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files.length) {
+      this.dImageFile = target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        this.displayImagePreview = reader.result; // Set the preview image source
+      };
+
+      reader.readAsDataURL(this.dImageFile); // Read file as data URL
+      this.managerForm.patchValue({ displayImage: this.dImageFile });
     }
   }
 

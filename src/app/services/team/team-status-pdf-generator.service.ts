@@ -68,14 +68,25 @@ export class TeamStatusPdfGeneratorService {
 
         /* ===== TEAM HEADER ===== */
         doc.setFillColor(team.primaryColor || '#eeeeee');
-        doc.rect(marginX, y - 6, pageWidth - marginX * 2, 12, 'F');
+        doc.rect(marginX, y - 7, pageWidth - marginX * 2, 14, 'F');
 
+          // Team logo (small & clean)
+        if (team?.logo) {
+          const teamLogo = await this.getBase64FromUrlOriginal(team.logo);
+          if (teamLogo) {
+            doc.addImage(teamLogo, 'PNG', marginX + 4, y - 6, 12, 12);
+          }
+        }
+
+// Team name
         doc.setFontSize(16);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(0);
-        doc.text(team.name.toUpperCase(), pageWidth / 2, y + 2, { align: 'center' });
+        doc.text(team.name.toUpperCase(), pageWidth / 2, y + 3, {
+          align: 'center'
+        });
 
-        y += 18;
+        y += 20;
 
         /* ===== MANAGER ===== */
         doc.setFontSize(12);

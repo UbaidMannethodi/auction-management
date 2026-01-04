@@ -6,6 +6,7 @@ export interface Team {
   name: string;
   primaryColor: string;
   secondaryColor: string;
+  logo: string;
   manager?: any;
   players?: any[];
 }

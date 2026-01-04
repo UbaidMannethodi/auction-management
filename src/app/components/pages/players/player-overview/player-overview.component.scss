@@ -1,0 +1,74 @@
+@keyframes playerEnter {
+  0% {
+    transform: translateY(40px) scale(0.96);
+    opacity: 0;
+    filter: blur(4px);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+.animate-player-enter {
+  animation: playerEnter 1.6s ease-out forwards;
+}
+
+
+@keyframes sweep {
+  0% {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.25;
+  }
+  100% {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+}
+
+.light-sweep {
+  background: linear-gradient(
+      120deg,
+      transparent 30%,
+      rgba(255,255,255,0.18),
+      transparent 70%
+  );
+  animation: sweep 6s ease-in-out infinite;
+}
+
+.football-loader {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 30%, #fff 18%, transparent 19%),
+    radial-gradient(circle at 70% 30%, #fff 18%, transparent 19%),
+    radial-gradient(circle at 50% 55%, #fff 22%, transparent 23%),
+    #000;
+  box-shadow:
+    0 0 0 6px #fff inset,
+    0 0 30px rgba(255,255,255,0.35);
+  animation: spinBall 1.2s linear infinite;
+}
+
+@keyframes spinBall {
+  from {
+    transform: rotate(0deg) scale(0.95);
+  }
+  to {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@keyframes pulseText {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.loader-text {
+  animation: pulseText 2s ease-in-out infinite;
+}

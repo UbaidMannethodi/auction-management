@@ -1,85 +1,114 @@
-<div
-  class="relative bg-cover bg-center h-screen flex flex-col items-center grayscale-30 p-2 md:p-4 lg:p-6 overflow-hidden"
-  style="background-image: url('/images/icons/bg/stadium_1.jpg');"
->
-  <!-- Background Gradient Overlay -->
-  <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="relative h-screen w-full flex overflow-hidden bg-black">
 
-  <div class=" !min-w-[490px] text-center py-3 mb-4 rounded-xl shadow-md"
-       [ngStyle]="{
-           'background': 'linear-gradient(to right, ' + data?.team.primaryColor + ', ' + data?.team.secondaryColor + ')'
-         }">
-    <h3 class="text-3xl md:text-4xl lg:text-6xl font-bold text-white tracking-wide">{{ data?.team.name }}</h3>
-  </div>
+  <!-- ================= LEFT : MANAGER HERO ================= -->
+  <div
+    class="relative w-[42%] flex items-end justify-center overflow-hidden"
+    style="background: radial-gradient(circle at 50% 30%, #2a2a2a 0%, #0b0b0b 70%);"
+  >
 
-  <!-- Manager Section with flexible scaling -->
-  <div class="flex justify-center mt-3 lg:mt-4 flex-shrink-0 z-10">
+    <!-- Vignette -->
+    <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent"></div>
+
+    <!-- Team color glow (very subtle) -->
     <div
-      [ngStyle]="{'border-color': data?.team.primaryColor}"
-      class="relative bg-black bg-opacity-80 text-white rounded-xl p-4 md:p-6 lg:p-7 border-4 shadow-xl w-64 md:w-72 lg:w-80 text-center">
+      class="absolute bottom-0 left-1/2 -translate-x-1/2
+           w-[70%] h-[30%] blur-3xl opacity-25"
+      [style.background]="data?.team.primaryColor"
+    ></div>
+
+    <!-- Ground shadow -->
+    <div
+      class="absolute bottom-6 w-[55%] h-8 rounded-full blur-xl opacity-40"
+      style="background:black"
+    ></div>
+
+    <!-- Manager Image -->
+    <img
+      [src]="data?.team?.manager?.displayImage"
+      alt="Manager"
+      class="relative z-10 h-[92%] object-contain animate-slide-in-left"
+    />
+
+    <!-- Team badge -->
+    <div class="absolute bottom-8 left-8 z-20 flex items-center gap-4">
       <img
-        [src]="data?.team?.manager?.image || '/images/icons/player_avatar_white.jpeg'"
-        alt="Manager"
-        class="w-24 h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full border-2 border-white mb-3 mx-auto shadow-lg"
+        [src]="data?.team.logo"
+        class="w-16 h-16 object-contain"
       />
-      <p class="text-lg md:text-xl font-semibold">{{ data?.team?.manager?.name }}</p>
-      <p class="text-sm md:text-lg opacity-80">Manager</p>
+      <div
+        class="h-12 w-1"
+        [style.background]="data?.team.primaryColor"
+      ></div>
     </div>
   </div>
 
-  <!-- Player Grid with custom row layout -->
-  <div class="flex-grow w-full max-w-screen-lg px-4 md:px-6 mt-4 lg:mt-6 overflow-hidden z-10">
-    <!-- First Row: 4 Players -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
-      <div
-        *ngFor="let player of data?.team?.players | slice:0:4"
-        [ngStyle]="{'border-color': data?.team.primaryColor}"
-        class="min-w-[220px] bg-black bg-opacity-75 text-white rounded-lg p-3 md:p-4 lg:p-5 border-2 text-center shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl"
-      >
-        <img
-          [src]="player.image || '/images/icons/player_avatar_white.jpeg'"
-          alt="{{ player.name }}"
-          class="w-24 h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full mx-auto mb-2 shadow-md border-2 border-gray-700"
-        />
-        <p class="text-sm md:text-md lg:text-lg font-semibold tracking-wide">{{ player?.name }}</p>
-        <p class="text-xs md:text-sm lg:text-md text-gray-300">{{ player?.position | titlecase }}</p>
+  <!-- ================= RIGHT : LINEUPS ================= -->
+  <div class="relative w-[58%] bg-[#f5f5f5] px-16 py-14 flex flex-col justify-center shadow-[-20px_0_40px_rgba(0,0,0,0.3)]">
 
-        <!-- Price Tag -->
-        <div class="bg-primary-color text-secondary-color rounded-full px-2 md:px-3 py-1 mt-1 text-xs md:text-sm font-bold shadow-md"
-             [ngStyle]="{'background-color': data?.team.primaryColor, 'color': data?.team.secondaryColor}"
-        >
-          ₹{{ player?.price || 0 }}
-        </div>
+    <!-- TOP BAR -->
+    <div class="absolute top-0 left-0 w-full h-2"
+         [style.background]="data?.team.primaryColor">
+    </div>
+
+    <!-- HEADER -->
+    <div class="mb-10">
+      <h1 class="text-5xl font-extrabold tracking-widest uppercase text-black">
+        Lineups
+      </h1>
+
+      <div class="flex items-center gap-4 mt-3">
+        <span
+          class="block h-1 w-14"
+          [style.background]="data?.team.primaryColor"
+        ></span>
+        <p class="text-xl font-semibold uppercase tracking-wider text-gray-700">
+          {{ data?.team.name }}
+        </p>
       </div>
     </div>
 
-    <!-- Second Row: 3 Players, centered -->
-    <div class="flex justify-center gap-3 md:gap-4 lg:gap-6 mt-3 md:mt-4">
-      <div
-        *ngFor="let player of data?.team?.players | slice:4:7"
-        [ngStyle]="{'border-color': data?.team.primaryColor}"
-        class="min-w-[220px] bg-black bg-opacity-75 text-white rounded-lg p-3 md:p-4 lg:p-5 border-2 text-center shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl"
-      >
-        <img
-          [src]="player.image || '/images/icons/player_avatar_white.jpeg'"
-          alt="{{ player.name }}"
-          class="w-24 h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full mx-auto mb-2 shadow-md border-2 border-gray-700"
-        />
-        <p class="text-sm md:text-md lg:text-lg font-semibold tracking-wide">{{ player?.name }}</p>
-        <p class="text-xs md:text-sm lg:text-md text-gray-300">{{ player?.position | titlecase }}</p>
+    <!-- PLAYER LIST -->
+    <div class="grid grid-cols-2 gap-x-20 gap-y-4 text-lg">
 
-        <!-- Price Tag -->
-        <div class="bg-primary-color text-secondary-color rounded-full px-2 md:px-3 py-1 mt-1 text-xs md:text-sm font-bold shadow-md"
-             [ngStyle]="{'background-color': data?.team.primaryColor, 'color': data?.team.secondaryColor}"
+      <div
+        *ngFor="let player of data?.team?.players; let i = index"
+        class="flex items-center gap-4 opacity-0 animate-fade-up"
+        [style.animationDelay]="(i * 70) + 'ms'"
+      >
+        <!-- NUMBER -->
+        <span
+          class="w-8 text-right font-bold"
+          [style.color]="data?.team.primaryColor"
         >
-          ₹{{ player?.price || 0 }}
-        </div>
+          {{ i + 1 }}
+        </span>
+
+        <!-- NAME -->
+        <span class="font-semibold text-gray-900 tracking-wide">
+          {{ player.name }}
+        </span>
+
+        <!-- CAPTAIN -->
+        <span
+          *ngIf="player.isCaptain"
+          class="ml-1 text-sm font-bold"
+          [style.color]="data?.team.primaryColor"
+        >
+          (C)
+        </span>
       </div>
+
     </div>
+
+    <!-- READY STATUS -->
+    <div
+      *ngIf="data?.team?.players?.length === 6"
+      class="mt-12 inline-flex items-center gap-4 px-8 py-3 text-sm font-bold uppercase tracking-widest"
+      [style.borderLeft]="'6px solid ' + data?.team.primaryColor"
+      style="background:#eaeaea"
+    >
+      Ready for Kick-Off
+    </div>
+
   </div>
-
-  <button (click)="this.openTeamStatusDialog()" class="absolute right-4 bottom-4 text-white text-xl md:text-2xl focus:outline-none">
-    <span class="transform transition-transform">▼</span>
-  </button>
-
 </div>

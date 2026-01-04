@@ -25,3 +25,84 @@
 
 }
 
+
+.token-section::-webkit-scrollbar {
+  width: 8px;
+}
+.token-section::-webkit-scrollbar-thumb {
+  background: rgba(255, 215, 0, 0.4);
+  border-radius: 10px;
+}
+
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-card-enter {
+  animation: cardEnter 0.6s ease-out both;
+}
+
+@keyframes tokenFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-token-float {
+  animation: tokenFloat 4s ease-in-out infinite;
+}
+
+.ready-badge {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+
+  padding: 6px 18px;
+  border-radius: 999px;
+
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+
+  color: #facc15; /* yellow-400 */
+
+  background: linear-gradient(
+      135deg,
+      rgba(250, 204, 21, 0.18),
+      rgba(0, 0, 0, 0.85)
+  );
+
+  border: 1px solid rgba(250, 204, 21, 0.5);
+  box-shadow:
+    0 0 12px rgba(250, 204, 21, 0.25),
+    inset 0 0 8px rgba(250, 204, 21, 0.15);
+
+  pointer-events: none;
+  white-space: nowrap;
+
+  animation: readyPulse 2.5s ease-in-out infinite;
+}
+
+/* Soft pulse – projector safe */
+@keyframes readyPulse {
+  0%, 100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 0.95;
+  }
+  50% {
+    transform: translateX(-50%) scale(1.05);
+    opacity: 1;
+  }
+}

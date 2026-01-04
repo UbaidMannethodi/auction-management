@@ -1,0 +1,14 @@
+@keyframes accentGlow {
+  0%, 100% {
+    opacity: 0.6;
+    box-shadow: 0 0 10px rgba(255,255,255,0.15);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 25px rgba(255,255,255,0.35);
+  }
+}
+
+.animate-accent {
+  animation: accentGlow 3s ease-in-out infinite;
+}

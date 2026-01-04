@@ -9,10 +9,47 @@
     <!-- HEADER (FIXED) -->
     <div class="p-8 border-b border-gray-700 shrink-0">
 
-      <!-- TEAM NAME -->
-      <h2 class="text-white text-4xl font-extrabold tracking-wide mb-6">
-        {{ data.team?.name }}
-      </h2>
+      <!-- TEAM HEADER -->
+      <div class="flex items-center gap-6 mb-8">
+
+        <!-- TEAM LOGO -->
+        <div
+          class="relative w-20 h-20 rounded-xl
+           bg-black/60 flex items-center justify-center
+           border border-white/10"
+        >
+          <img
+            [src]="data.team?.logo || '/images/icons/team_placeholder.png'"
+            alt="Team Logo"
+            class="w-14 h-14 object-contain"
+          />
+
+          <!-- Soft glow -->
+          <div
+            class="absolute inset-0 rounded-xl pointer-events-none"
+            [ngStyle]="{
+        'box-shadow': '0 0 30px ' + data.team?.primaryColor,
+        'opacity': '0.25'
+      }"
+          ></div>
+        </div>
+
+        <!-- TEAM NAME + ACCENT -->
+        <div class="flex-1">
+          <h2
+            class="text-white text-5xl font-extrabold tracking-wide leading-tight"
+          >
+            {{ data.team?.name }}
+          </h2>
+
+          <!-- TEAM COLOR ACCENT LINE -->
+          <div
+            class="mt-2 h-1 w-40 rounded-full animate-accent"
+            [ngStyle]="{ 'background-color': data.team?.primaryColor }"
+          ></div>
+        </div>
+
+      </div>
 
       <!-- SUMMARY CARDS -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">

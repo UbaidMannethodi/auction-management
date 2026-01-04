@@ -1,0 +1,44 @@
+<div
+  class="preview-overlay"
+  (click)="close()"
+  [style.--teamColor]="data.primaryColor || '#22c55e'"
+>
+
+  <!-- Stadium lights -->
+  <div class="stadium-lights"></div>
+
+  <!-- TEAM HEADER -->
+  <div class="team-header">
+    <img
+      class="team-logo"
+      [src]="data?.logo"
+      alt="Team Logo"
+    />
+
+    <div class="team-name">
+      {{ data?.name }}
+    </div>
+  </div>
+
+  <!-- IMAGE LOADER -->
+  <div class="image-loader" *ngIf="isImageLoading">
+    <div class="spinner"></div>
+    <div class="loading-text">Loading Manager</div>
+  </div>
+
+  <!-- MANAGER IMAGE -->
+  <img
+    [hidden]="isImageLoading"
+    class="manager-image"
+    [src]="data?.manager?.displayImage"
+    alt="Manager Image"
+    (load)="onImageLoad()"
+    (error)="onImageError()"
+  />
+
+  <!-- MANAGER NAME -->
+  <div class="manager-name">
+    {{ data?.manager?.name }}
+  </div>
+
+</div>

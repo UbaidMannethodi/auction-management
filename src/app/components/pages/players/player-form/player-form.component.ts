@@ -84,7 +84,7 @@ export class PlayerFormComponent implements OnInit {
       tokenNo: [editingData?.tokenNo ?? (this.data.totalPlayers + 1), Validators.required],
       name: [editingData?.name, Validators.required],
       position: [editingData?.position, Validators.required],
-      phone: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
+      phone: [editingData?.phone, [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
       price: [editingData?.price],
       isCaptain: [editingData?.isCaptain],
       image: [editingData?.image, Validators.required],

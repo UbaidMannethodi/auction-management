@@ -1,15 +1,19 @@
+
+
+
 <div class="relative">
 
-  <!-- Close Icon -->
+  <!-- CLOSE BUTTON -->
   <button
     (click)="closeDialog()"
-    class="z-50 absolute top-2 right-2 text-white hover:text-gray-300 focus:outline-none"
+    class="z-50 absolute top-3 right-3 text-white hover:text-gray-300 focus:outline-none"
   >
-    <span class="material-icons">close</span>
+    <span class="material-icons text-3xl">close</span>
   </button>
 
+  <!-- GLOBAL LOADER -->
   <ngx-loading
-    [show]="isImageLoading || loading"
+    [show]=" loading"
     [config]="{ backdropBorderRadius: '3px' }"
   ></ngx-loading>
 
@@ -17,132 +21,129 @@
   <div
     class="relative flex flex-col items-center justify-center
            bg-[url('/images/icons/st_1.jpg')] bg-cover bg-center
-           brightness-80 contrast-110 saturate-95
-           p-6 md:p-8 rounded-lg w-full h-screen"
+           brightness-90 contrast-110 saturate-95
+           p-4 md:p-6 w-full h-screen overflow-hidden"
   >
 
-    <!-- CLUB LOGO + HEADING -->
-    <div class="absolute top-4 left-4 z-30 flex items-center gap-4">
+    <!-- DARK OVERLAYS -->
+    <div class="absolute inset-0 bg-black/70"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),rgba(0,0,0,0.85))]"></div>
 
-      <!-- Logo -->
-      <div
-        class="bg-black/40 backdrop-blur-sm
-           rounded-xl p-3
-           border border-white/10
-           shadow-md"
-      >
+    <!-- HEADER (LOGO + TITLE) -->
+    <div class="absolute top-4 left-4 z-30 flex items-center gap-4">
+      <div class="bg-black/40 backdrop-blur-md rounded-xl p-3 border border-white/10 shadow-md">
         <img
           src="/images/icons/universal_upl_logo.png"
-          alt="Club Logo"
-          class="w-14 md:w-18 h-auto object-contain opacity-90"
+          alt="League Logo"
+          class="w-14 md:w-16 opacity-90"
         />
       </div>
 
-      <!-- Heading Text -->
       <div class="leading-tight">
-        <h1
-          class="text-white text-lg md:text-xl font-bold tracking-wide"
-          style="font-family: serif, sans-serif"
-        >
+        <h1 class="text-white text-lg md:text-xl font-bold tracking-wide">
           UNIVERSAL ARTS & SPORTS
         </h1>
-        <p class="text-gray-300 text-xs md:text-sm tracking-wider uppercase">
+        <p class="text-gray-300 text-xs md:text-sm tracking-widest uppercase">
           Premier League Mega Auction 2025
         </p>
       </div>
-
     </div>
 
-    <!-- OVERLAYS -->
-    <div class="absolute inset-0 bg-black/70"></div>
-
-    <div
-      class="absolute inset-0
-             bg-gradient-to-t from-black via-black/50 to-transparent"
-    ></div>
-
-    <div
-      class="absolute inset-0
-             bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),rgba(0,0,0,0.85))]"
-    ></div>
-
-    <!-- CONTENT -->
-    <div class="relative z-10 flex flex-col items-center">
+    <!-- MAIN CONTENT -->
+    <div class="relative z-20 flex flex-col items-center justify-center w-full">
 
       <!-- PLAYER IMAGE -->
-      <div
-        class="relative overflow-hidden mb-6 md:mb-10
-               w-full max-w-sm rounded-2xl
-               shadow-[0_0_40px_rgba(255,255,255,0.15)]"
-      >
-        <img
-          [hidden]="isImageLoading"
-          [src]="data?.player?.image || '/images/icons/avatar.png'"
-          alt="{{ data.player.name }}"
-          class="w-full h-[300px] md:h-[500px] rounded-lg"
-          (load)="onImageLoad()"
-          (error)="onImageError()"
-        />
+      <div class="relative mb-6 flex justify-center">
 
-        <ng-container *ngIf="isImageLoading">
+        <!-- IMAGE + SHADOW -->
+        <div
+          class="relative inline-flex items-center justify-center
+           rounded-2xl
+           shadow-[0_0_60px_rgba(255,255,255,0.25)]
+           animate-player-enter"
+        >
+
+          <!-- ACTUAL IMAGE -->
+          <img
+            *ngIf="!imageError"
+            [src]="data?.player?.image"
+            alt="{{ data?.player?.name || 'Player' }}"
+            class="block
+             max-h-[75vh] max-w-[90vw]
+             object-contain
+             rounded-2xl
+             transition-opacity duration-500"
+            [class.opacity-0]="isImageLoading"
+            [class.opacity-100]="!isImageLoading"
+            (load)="onImageLoad()"
+            (error)="onImageError()"
+          />
+
+          <!-- FOOTBALL LOADER -->
           <div
-            class="relative overflow-hidden mb-6 md:mb-10
-                   w-full max-w-sm rounded-2xl shadow-lg"
+            *ngIf="isImageLoading"
+            class="absolute inset-0 flex flex-col items-center justify-center
+             rounded-2xl bg-black/40"
           >
-            <img
-              src="/images/icons/player_avatar_white.jpeg"
-              alt=""
-              class="w-[15rem] h-[20rem] md:w-[20rem] md:h-[26rem] rounded-lg"
-            />
-            <div
-              class="pointer-events-none absolute inset-0
-                     bg-gradient-to-t from-black/60 via-transparent to-black/40"
-            ></div>
+            <div class="football-loader"></div>
+            <p class="mt-4 text-white/80 tracking-widest text-sm uppercase loader-text">
+              Loading the legend…
+            </p>
           </div>
-        </ng-container>
+
+          <!-- IMAGE ERROR (OPTIONAL CLEAN FALLBACK) -->
+          <div
+            *ngIf="imageError && !isImageLoading"
+            class="flex items-center justify-center
+             w-[60vw] h-[60vh]
+             rounded-2xl bg-black/50"
+          >
+      <span class="text-white/60 text-lg tracking-wide uppercase">
+        Player Photo Unavailable
+      </span>
+          </div>
+
+          <!-- LIGHT SWEEP -->
+          <div class="absolute inset-0 pointer-events-none light-sweep"></div>
+
+        </div>
       </div>
 
       <!-- PLAYER NAME -->
-      <h2
+      <h2 *ngIf="!isImageLoading"
         class="text-4xl md:text-6xl font-extrabold
-               text-white mb-4 md:mb-6
-               tracking-wide drop-shadow-lg text-center"
+               text-white tracking-wide text-center
+               drop-shadow-[0_0_25px_rgba(255,255,255,0.6)]"
       >
-        <span class="uppercase" style="font-family: serif, sans-serif">
-          {{ data.player.name }}
-        </span>
+        {{ data?.player?.name | uppercase }}
       </h2>
 
       <!-- POSITION BADGE -->
-      <div
-        class="relative mt-2 px-8 py-3 rounded-full
+      <div  *ngIf="!isImageLoading"
+        class="mt-4 px-10 py-3 rounded-full
                backdrop-blur-md bg-white/10
                border border-white/20
-               shadow-[0_0_25px_rgba(255,255,255,0.15)]
-               text-white"
+               shadow-[0_0_25px_rgba(255,255,255,0.2)]"
       >
         <span
-          class="absolute inset-0 rounded-full
-                 bg-gradient-to-r from-yellow-400/20 via-white/10 to-yellow-400/20 blur-md"
-        ></span>
-
-        <p
-          class="relative z-10 text-xl md:text-2xl
-                 font-bold tracking-widest uppercase"
+          class="text-xl md:text-2xl
+                 font-bold tracking-widest uppercase text-white"
         >
-          {{ dataUtils?.getPosition(data.player.position) }}
-        </p>
+          {{ dataUtils?.getPosition(data?.player?.position) }}
+        </span>
       </div>
 
     </div>
 
-    <!-- TOGGLE BUTTON -->
+    <!-- TOGGLE DETAILS -->
     <button
       (click)="showDetails = !showDetails"
-      class="absolute right-4 bottom-4 text-white text-xl md:text-2xl focus:outline-none"
+      class="absolute right-4 bottom-4 z-30
+             text-white text-3xl focus:outline-none"
     >
       <span
-        class="transform transition-transform"
+        class="transition-transform"
         [ngClass]="{
           'rotate-180': showDetails,
           'rotate-90': !showDetails
@@ -155,28 +156,26 @@
     <!-- DETAILS PANEL -->
     <div
       *ngIf="showDetails"
-      class="absolute z-50 right-0 bottom-[70px]
-             w-full max-w-xs
-             bg-black/70 p-4 rounded-lg
-             shadow-md text-white
-             flex flex-col gap-4"
+      class="absolute z-40 right-4 bottom-20
+             w-full max-w-sm
+             bg-black/75 p-5 rounded-xl
+             shadow-lg text-white space-y-4"
     >
-      <div class="flex flex-col">
-        <label class="text-lg font-semibold mb-1">Price</label>
+
+      <div>
+        <label class="block text-lg font-semibold mb-1">Price</label>
         <input
           type="number"
           [(ngModel)]="amount"
-          class="px-3 py-2 bg-gray-800 text-white rounded-md
-                 focus:outline-none border border-gray-500"
+          class="w-full px-3 py-2 bg-gray-900 rounded-md border border-gray-600 focus:outline-none"
         />
       </div>
 
-      <div class="flex flex-col">
-        <label class="text-lg font-semibold mb-1">Team</label>
+      <div>
+        <label class="block text-lg font-semibold mb-1">Team</label>
         <select
           [(ngModel)]="selectedTeam"
-          class="px-3 py-2 bg-gray-800 text-white
-                 rounded-lg focus:outline-none border border-gray-500"
+          class="w-full px-3 py-2 bg-gray-900 rounded-md border border-gray-600 focus:outline-none"
         >
           <option *ngFor="let team of data?.teams" [ngValue]="team">
             {{ team.name }}
@@ -186,11 +185,12 @@
 
       <button
         (dblclick)="updatePlayerDetails()"
-        class="bg-blue-500 text-white py-2 px-4
-               rounded-lg hover:bg-blue-600 transition"
+        class="w-full bg-blue-500 hover:bg-blue-600 transition
+               py-2 rounded-lg font-bold"
       >
         Save
       </button>
+
     </div>
 
   </div>

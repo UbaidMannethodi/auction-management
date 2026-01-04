@@ -17,6 +17,9 @@ import {TeamStatusComponent} from "./team-status/team-status.component";
 import {Player} from "../../../model/player";
 import {DataUtils} from "../../../utils/data-utils";
 import {TeamStatusPdfGeneratorService} from "../../../services/team/team-status-pdf-generator.service";
+import {
+  ManagerFullOverviewModalComponent
+} from "../managers/manager-full-overview-modal/manager-full-overview-modal.component";
 
 
 @Component({
@@ -68,6 +71,20 @@ export class TeamsComponent implements OnInit {
       this.loading = false;
     }
   }
+  openImagePreview(team: Team): void {
+    if (!team) return;
+
+    this.dialog.open(ManagerFullOverviewModalComponent, {
+      data: team,
+      panelClass: 'fullscreen-image-dialog',
+      width: '100vw',
+      height: '100vh',
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      hasBackdrop: true
+    });
+  }
+
 
   openConfirmDialog(team: Team): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
