@@ -12,3 +12,40 @@
 .animate-accent {
   animation: accentGlow 3s ease-in-out infinite;
 }
+
+.next-team-btn {
+  position: fixed;
+  bottom: 28px;
+  right: 32px;
+  z-index: 50;
+
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  border: none;
+
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+
+  font-size: 20px;
+  font-weight: bold;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.8);
+  transition: all 0.2s ease;
+}
+
+.next-team-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.25);
+}
+
+.next-team-btn:active {
+  transform: scale(0.95);
+}

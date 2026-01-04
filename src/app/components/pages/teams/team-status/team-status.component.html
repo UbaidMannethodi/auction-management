@@ -63,7 +63,7 @@
             Total Spend
           </p>
           <p class="text-white text-4xl font-extrabold mt-2">
-            ₹{{ data.teamStatus?.totalSpend }}
+            ₹{{ teamStatus?.totalSpend }}
           </p>
         </div>
 
@@ -75,7 +75,7 @@
             Remaining Budget
           </p>
           <p class="text-white text-4xl font-extrabold mt-2">
-            ₹{{ data.teamStatus?.availableAmount }}
+            ₹{{ teamStatus?.availableAmount }}
           </p>
         </div>
 
@@ -98,7 +98,7 @@
     <!-- PLAYERS (SCROLLABLE) -->
     <div class="flex-1 p-6 space-y-10 overflow-y-auto">
 
-      <div *ngFor="let position of objectKeys(data.teamStatus?.selectedPositions)">
+      <div *ngFor="let position of objectKeys(teamStatus?.selectedPositions)">
         <!-- POSITION TITLE -->
         <h3 class="text-gray-300 text-2xl font-semibold mb-6 capitalize">
           {{ position }}
@@ -107,7 +107,7 @@
         <!-- PLAYER LIST (2 COLUMNS, SAFE) -->
         <div class="space-y-4 columns-1 md:columns-2">
           <ng-container
-            *ngFor="let player of data.teamStatus?.selectedPositions[position]"
+            *ngFor="let player of teamStatus?.selectedPositions[position]"
           >
             <div class="row">
               <div
@@ -142,4 +142,13 @@
 
     </div>
   </div>
+
+  <!-- NEXT TEAM BUTTON -->
+  <button
+    class="next-team-btn"
+    (click)="showNextTeam($event)"
+    title="Next Team"
+  >
+    ▶
+  </button>
 </div>

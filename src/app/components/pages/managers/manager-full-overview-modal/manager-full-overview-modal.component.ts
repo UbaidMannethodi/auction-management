@@ -15,11 +15,25 @@ import {NgIf} from "@angular/common";
 export class ManagerFullOverviewModalComponent {
 
   isImageLoading  = true;
+  currentTeamIndex = 0;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: Team,
+    @Inject(MAT_DIALOG_DATA) public data: {team: Team, fullTeams: Team[]},
     private dialogRef: MatDialogRef<ManagerFullOverviewModalComponent>
   ) {
+  }
+
+
+  showNextTeam(event: MouseEvent) {
+    event.stopPropagation(); // prevents overlay close
+    if (!this.data?.fullTeams?.length) return;
+
+    this.isImageLoading = true;
+
+    this.currentTeamIndex =
+      (this.currentTeamIndex + 1) % this.data.fullTeams.length;
+
+    this.data.team = this.data.fullTeams[this.currentTeamIndex];
   }
 
   close(): void {

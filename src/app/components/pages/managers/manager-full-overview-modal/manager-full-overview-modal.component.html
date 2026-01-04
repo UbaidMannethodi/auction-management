@@ -1,7 +1,7 @@
 <div
   class="preview-overlay"
   (click)="close()"
-  [style.--teamColor]="data.primaryColor || '#22c55e'"
+  [style.--teamColor]="data.team.primaryColor || '#22c55e'"
 >
 
   <!-- Stadium lights -->
@@ -11,12 +11,12 @@
   <div class="team-header">
     <img
       class="team-logo"
-      [src]="data?.logo"
+      [src]="data?.team.logo"
       alt="Team Logo"
     />
 
     <div class="team-name">
-      {{ data?.name }}
+      {{ data?.team.name }}
     </div>
   </div>
 
@@ -30,7 +30,7 @@
   <img
     [hidden]="isImageLoading"
     class="manager-image"
-    [src]="data?.manager?.displayImage"
+    [src]="data?.team.manager?.displayImage"
     alt="Manager Image"
     (load)="onImageLoad()"
     (error)="onImageError()"
@@ -38,7 +38,16 @@
 
   <!-- MANAGER NAME -->
   <div class="manager-name">
-    {{ data?.manager?.name }}
+    {{ data?.team.manager?.name }}
   </div>
+
+  <!-- NEXT TEAM BUTTON -->
+  <button
+    class="next-team-btn"
+    (click)="showNextTeam($event)"
+    title="Next Team"
+  >
+    ▶
+  </button>
 
 </div>

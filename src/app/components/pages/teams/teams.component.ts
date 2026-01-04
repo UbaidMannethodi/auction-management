@@ -75,7 +75,7 @@ export class TeamsComponent implements OnInit {
     if (!team) return;
 
     this.dialog.open(ManagerFullOverviewModalComponent, {
-      data: team,
+      data: {team: team, fullTeams: this.teamService.teams},
       panelClass: 'fullscreen-image-dialog',
       width: '100vw',
       height: '100vh',
@@ -158,8 +158,8 @@ export class TeamsComponent implements OnInit {
       minWidth: '99vw',
       minHeight: '100vh',
       data: {
-        teamStatus: this.teamService.getTeamStatus(team),
-        team: team
+        team: team,
+        fullTeams: this.teamService?.teams
       }
     });
   }
