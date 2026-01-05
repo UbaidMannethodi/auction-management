@@ -61,7 +61,7 @@
           class="block h-1 w-14"
           [style.background]="data?.team.primaryColor"
         ></span>
-        <p class="text-xl font-semibold uppercase tracking-wider text-gray-700">
+        <p class="text-3xl font-semibold uppercase tracking-wider text-gray-700">
           {{ data?.team.name }}
         </p>
       </div>
@@ -84,14 +84,14 @@
         </span>
 
         <!-- NAME -->
-        <span class="font-semibold text-gray-900 tracking-wide">
+        <span class="font-semibold text-gray-900 text-3xl tracking-wide">
           {{ player.name }}
         </span>
 
         <!-- CAPTAIN -->
         <span
           *ngIf="player.isCaptain"
-          class="ml-1 text-sm font-bold"
+          class="ml-1 font-bold text-lg"
           [style.color]="data?.team.primaryColor"
         >
           (C)
